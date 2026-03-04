@@ -7,7 +7,7 @@ description: Use when building a complete production-ready SaaS, platform, or se
 
 ## Overview
 
-Meta-skill orchestrator that runs the full production pipeline: Product Manager → Solution Architect → DevOps. Invokes each specialized skill in sequence, passing context forward, to take a project from idea to deployment-ready codebase.
+Meta-skill orchestrator that runs the full production pipeline: Product Manager → Solution Architect → DevOps → Skill Maker. Invokes each specialized skill in sequence, passing context forward, to take a project from idea to deployment-ready codebase — then offers to create custom project-specific skills for easy extension.
 
 ## When to Use
 
@@ -27,6 +27,8 @@ digraph pg {
     "Phase 2: Solution Architect" [shape=box, style=filled, fillcolor="#e3f2fd"];
     "Architecture Ready" [shape=diamond];
     "Phase 3: DevOps" [shape=box, style=filled, fillcolor="#fff3e0"];
+    "Infra Ready" [shape=diamond];
+    "Phase 4: Skill Maker" [shape=box, style=filled, fillcolor="#f3e5f5"];
     "Production Ready" [shape=doublecircle];
 
     "Triggered" -> "Phase 1: Product Manager";
@@ -36,20 +38,24 @@ digraph pg {
     "Phase 2: Solution Architect" -> "Architecture Ready";
     "Architecture Ready" -> "Phase 2: Solution Architect" [label="revise"];
     "Architecture Ready" -> "Phase 3: DevOps" [label="approved"];
-    "Phase 3: DevOps" -> "Production Ready";
+    "Phase 3: DevOps" -> "Infra Ready";
+    "Infra Ready" -> "Phase 4: Skill Maker" [label="extend"];
+    "Infra Ready" -> "Production Ready" [label="skip"];
+    "Phase 4: Skill Maker" -> "Production Ready";
 }
 ```
 
 ## How It Works
 
-This skill orchestrates three independent skills in sequence. **Each skill must be installed separately.** The orchestrator invokes them via the Skill tool and passes context between phases.
+This skill orchestrates four independent skills in sequence. **Each skill must be installed separately.** The orchestrator invokes them via the Skill tool and passes context between phases.
 
 ### Prerequisites
 
-All three sub-skills must be available:
+All four sub-skills must be available:
 1. **product-manager** — Business requirements, BRD/PRD generation
 2. **solution-architect** — System design, tech stack, API contracts, scaffolding
 3. **devops** — Infrastructure, CI/CD, containers, monitoring, security
+4. **skill-maker** — Custom skill creation for project-specific workflows
 
 ### Phase 1: Product Manager
 
@@ -83,6 +89,25 @@ Invoke the `devops` skill. This phase:
 
 **Output:** `DevOps-Suite/` in project root
 
+### Phase 4: Skill Maker (Optional — Recommended)
+
+After the core pipeline completes, offer to create project-specific custom skills. Invoke the `skill-maker` skill. This phase:
+- Analyzes the generated architecture, tech stack, and DevOps setup
+- Suggests 2-3 custom skills tailored to the project (e.g., "add-microservice", "deploy-to-staging", "onboard-developer")
+- Creates skills that encode the project's conventions so future work stays consistent
+
+**Suggested project-specific skills to offer:**
+
+| Suggested Skill | Purpose |
+|----------------|---------|
+| `add-service` | Scaffold a new microservice following the project's architecture patterns, auto-wiring into CI/CD and monitoring |
+| `add-api-endpoint` | Generate OpenAPI spec, handler, tests, and DB migration for a new endpoint following project conventions |
+| `deploy` | Run the project's specific deployment workflow (Terraform plan/apply, K8s rollout, smoke tests) |
+| `onboard-dev` | Guide new developers through project setup, architecture overview, and local dev environment |
+| `incident-response` | Walk through the project's incident playbook with pre-filled service names and runbook links |
+
+Ask the user which skills they'd like to create (or suggest their own), then invoke `skill-maker` for each.
+
 ## Execution Protocol
 
 When this skill is triggered:
@@ -99,6 +124,7 @@ When this skill is triggered:
    Phase 1: Product Manager → BRD/PRD
    Phase 2: Solution Architect → SolutionArchitect-Suite/
    Phase 3: DevOps → DevOps-Suite/
+   Phase 4: Skill Maker → Custom project skills (optional)
    ```
 
 3. **Execute sequentially** — Use the Skill tool to invoke each skill:
@@ -107,6 +133,8 @@ When this skill is triggered:
    - `Skill: solution-architect` (reference the BRD in your discovery answers)
    - Wait for architecture approval
    - `Skill: devops` (reference the architecture docs in your assessment answers)
+   - Wait for DevOps completion
+   - Ask user if they want custom project skills → `Skill: skill-maker` for each
 
 4. **Final summary** — After all phases complete, present:
    ```
@@ -117,12 +145,14 @@ When this skill is triggered:
    │   ├── api/ (OpenAPI, gRPC, AsyncAPI specs)
    │   ├── schemas/ (ERD, migrations)
    │   └── scaffold/ (project structure)
-   └── DevOps-Suite/
-       ├── terraform/ (multi-cloud IaC)
-       ├── ci-cd/ (pipelines, deployment scripts)
-       ├── containers/ (Docker, K8s, Helm)
-       ├── monitoring/ (Prometheus, Grafana, OTel)
-       └── security/ (scanning, IAM, compliance)
+   ├── DevOps-Suite/
+   │   ├── terraform/ (multi-cloud IaC)
+   │   ├── ci-cd/ (pipelines, deployment scripts)
+   │   ├── containers/ (Docker, K8s, Helm)
+   │   ├── monitoring/ (Prometheus, Grafana, OTel)
+   │   └── security/ (scanning, IAM, compliance)
+   └── Custom Skills (if created)
+       └── <project-specific skills installed locally>
    ```
 
 ## Context Bridging Rules
