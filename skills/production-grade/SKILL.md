@@ -29,13 +29,52 @@ Fully autonomous meta-skill orchestrator using Claude Code **Teams** and **TaskL
 - Going from idea to working, tested, secured, deployed code
 - User says "build me a...", "production grade", "production ready"
 
+## Auto-Update Check
+
+Run BEFORE Pipeline Kickoff. Silent if current. One prompt max if update exists.
+
+**Step 0 — version check:**
+
+1. Read `~/.claude/plugins/installed_plugins.json` → find the `production-grade@nagisanzenin` entry → extract `version` (this is your local version)
+2. WebFetch `https://raw.githubusercontent.com/nagisanzenin/claude-code-production-grade-plugin/main/.claude-plugin/plugin.json` → extract `version` (this is the remote version)
+3. **If WebFetch fails** (offline, timeout, 404) → silently continue. Never block the pipeline over an update check.
+4. **If remote ≤ local** → continue silently (user sees nothing)
+5. **If remote > local** → prompt:
+
+```python
+AskUserQuestion(questions=[{
+  "question": "production-grade v{remote} is available (you have v{local})",
+  "header": "Update Available",
+  "options": [
+    {"label": "Update to v{remote} (Recommended)", "description": "Auto-update and restart pipeline"},
+    {"label": "Skip — continue with v{local}", "description": "Use current version"}
+  ],
+  "multiSelect": false
+}])
+```
+
+6. **If skip** → continue pipeline with current version
+7. **If update** → execute in sequence:
+   ```bash
+   git clone --depth 1 https://github.com/nagisanzenin/claude-code-production-grade-plugin.git /tmp/pg-update
+   ```
+   - Read new SHA: `git -C /tmp/pg-update rev-parse HEAD`
+   - Create cache dir: `mkdir -p ~/.claude/plugins/cache/nagisanzenin/production-grade/{remote_version}`
+   - Copy files: `cp -r /tmp/pg-update/skills /tmp/pg-update/.claude-plugin /tmp/pg-update/README.md /tmp/pg-update/VISION.md ~/.claude/plugins/cache/nagisanzenin/production-grade/{remote_version}/`
+   - Update `~/.claude/plugins/installed_plugins.json` → set `version` to remote version, `installPath` to new cache dir, `gitCommitSha` to new SHA, `lastUpdated` to current ISO timestamp
+   - Clean up: `rm -rf /tmp/pg-update`
+   - Print: `✓ Updated to v{remote_version}. Re-invoke /production-grade to use the new version.`
+   - **STOP** — do not continue pipeline. The current session loaded the old SKILL.md; the user must re-invoke to pick up new content.
+
+**If any update step fails**, print a warning and continue with the current version. Never let the updater break the pipeline.
+
 ## Pipeline Kickoff
 
 When triggered, follow this EXACT sequence:
 
 1. **Print kickoff banner:**
 ```
-━━━ Production Grade Pipeline v3.1 ━━━━━━━━━━━━━━━━━━
+━━━ Production Grade Pipeline v{local_version} ━━━━━━━━━━━━━━━━━━
 Project: [extracted from user's message]
 ⧖ Bootstrapping workspace...
 ```
@@ -350,7 +389,7 @@ Every agent follows:
 
 ```
 ╔══════════════════════════════════════════════════════════════╗
-║                 PRODUCTION GRADE v3.1 — COMPLETE             ║
+║          PRODUCTION GRADE v{local_version} — COMPLETE          ║
 ╠══════════════════════════════════════════════════════════════╣
 ║  Project: <name>                                             ║
 ║                                                              ║
