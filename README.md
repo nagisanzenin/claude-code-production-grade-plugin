@@ -12,6 +12,15 @@ Most AI coding tools generate files. This one builds *systems* — architecture,
 
 > **v3.1** — 14 skills. Polymath co-pilot. 7 parallel execution points. Pre-flight gap detection. Gate companion for non-technical users. Works on greenfield and existing projects.
 
+### Quick Start
+
+```bash
+/plugin marketplace add nagisanzenin/claude-code-plugins
+/plugin install production-grade@nagisanzenin
+```
+
+Then say: *"Build a production-grade SaaS for [your idea]"* — or *"Help me think about [your idea]"* if you want the Polymath co-pilot first.
+
 ---
 
 ## Why This Exists
@@ -166,7 +175,7 @@ Large skills use a router + on-demand phase pattern. Only the relevant phase loa
 /plugin marketplace add nagisanzenin/claude-code-plugins
 /plugin install production-grade@nagisanzenin
 
-# Or load directly
+# Or load directly from source
 git clone https://github.com/nagisanzenin/claude-code-production-grade-plugin.git
 claude --plugin-dir /path/to/claude-code-production-grade-plugin
 ```
