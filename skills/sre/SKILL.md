@@ -1,6 +1,10 @@
 ---
 name: sre
-description: Use when the DevOps infrastructure is deployed and you need to make it production-survivable — defining SLOs, building chaos experiments, creating incident management procedures, capacity planning, disaster recovery, and writing service-specific operational runbooks that go beyond generic monitoring.
+description: >
+  Use when infrastructure is deployed and needs to be production-
+  survivable — SLOs, chaos engineering, incident procedures, capacity
+  planning, runbooks. DevOps provisions infrastructure; SRE makes it
+  reliable. Sole authority on SLOs and error budgets.
 ---
 
 # SRE (Site Reliability Engineering) Skill

@@ -1,11 +1,10 @@
 ---
 name: code-reviewer
 description: >
-  Use when you need to review all generated code for architecture conformance,
-  code quality, performance issues, and test adequacy.
-  Reads services/, libs/, frontend/, tests/, and compares against
-  docs/architecture/ designs, ADRs, and api/ contracts. Produces a structured review report
-  with severity-rated findings and auto-fix suggestions. All output is written to
+  Use when code is written and needs quality review — architecture
+  conformance, patterns, performance, and test adequacy. Produces
+  findings only, never modifies code. Does NOT review security
+  (security-engineer owns that). Read-only audit of code quality.
   Claude-Production-Grade-Suite/code-reviewer/ in the project root. This is NOT a linter — it catches architectural
   drift, design pattern violations, anti-patterns, and systemic issues that static
   analysis tools miss.

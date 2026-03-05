@@ -1,6 +1,10 @@
 ---
 name: devops
-description: Use when setting up CI/CD pipelines, infrastructure as code, container orchestration, monitoring, or cloud deployments. Triggers on "setup CI/CD", "deploy to cloud", "infrastructure", "Terraform", "Kubernetes", "Docker", "monitoring", "DevOps", "pipeline", or when preparing a codebase for production deployment.
+description: >
+  Use when working code needs to be containerized, deployed, or given
+  CI/CD infrastructure. The user has built something and needs it
+  running in production — Docker, Terraform, pipelines, monitoring.
+  Code must exist first; this skill packages and ships it.
 ---
 
 # DevOps

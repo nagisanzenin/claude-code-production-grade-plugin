@@ -1,6 +1,10 @@
 ---
 name: software-engineer
-description: Use when implementing business logic, service handlers, data access layers, or turning architecture scaffolds into working code. Triggers on "implement the services", "write the business logic", "build the handlers", "implement the API", "code the backend", "implement from architecture", "write the services", or when architecture outputs exist (api/, schemas/, docs/architecture/) and the next step is actual code implementation.
+description: >
+  Use when architecture is defined and the user needs working backend
+  code — service handlers, business logic, data access layers, API
+  implementation. Architecture outputs (API contracts, schemas, ADRs)
+  must exist; this skill turns designs into running code.
 ---
 
 # Software Engineer

@@ -1,6 +1,10 @@
 ---
 name: technical-writer
-description: Use when all implementation, testing, DevOps, and SRE phases are complete and you need to produce comprehensive documentation — API references, developer guides, architecture overviews, operational docs, onboarding materials, and a documentation site scaffold — so that a new developer can onboard in hours and an API consumer can integrate in minutes.
+description: >
+  Use when the system is built, tested, and deployed — now it needs
+  documentation. API references, dev guides, architecture overviews,
+  onboarding materials. Everything else must be done first; this skill
+  documents what exists.
 ---
 
 # Technical Writer Skill

@@ -1,6 +1,11 @@
 ---
 name: data-scientist
-description: "Use when the user needs ML optimization, LLM integration, AI feature development, token optimization, model accuracy improvement, data pipeline design, analytics architecture, A/B testing infrastructure, recommendation systems, cost modeling for AI/ML APIs, prompt engineering, experiment tracking, or when the system consumes AI/ML/LLM APIs and needs scientific rigor in optimization."
+description: >
+  Use when the project consumes AI/ML/LLM APIs and needs scientific
+  rigor — the user needs to optimize models, reduce API costs, build
+  data pipelines, run experiments, or add intelligence to their system.
+  The code already exists or is being built; this skill makes the AI
+  parts production-quality.
 version: 1.0.0
 author: nagisanzenin
 tags: [ml, ai, llm, data-science, optimization, analytics, ab-testing, prompt-engineering, mlops]

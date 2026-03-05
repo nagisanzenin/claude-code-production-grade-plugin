@@ -1,6 +1,10 @@
 ---
 name: frontend-engineer
-description: Use when building web frontend applications, UI components, design systems, or client-side features. Triggers on "build the frontend", "create UI", "design system", "component library", "web app", "React", "Next.js", "Vue", "Svelte", "frontend", "user interface", "pages and routes", or when implementing the client-side of a SaaS product from BRD user stories and API contracts.
+description: >
+  Use when the user needs a web frontend built — UI components, pages,
+  design system, or client-side application. Architecture and API
+  contracts should already exist; this skill implements the user-facing
+  layer from BRD user stories and API specs.
 ---
 
 # Frontend Engineer

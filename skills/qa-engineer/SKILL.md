@@ -1,13 +1,10 @@
 ---
 name: qa-engineer
 description: >
-  Use when you need to create comprehensive test suites for implemented code.
-  Takes implemented services from services/ and libs/, frontend components from
-  frontend/, API contracts from api/, and BRD acceptance criteria as inputs, then
-  generates production-grade test coverage including unit tests, integration tests,
-  contract tests, E2E tests, performance tests, and CI test infrastructure. All
-  test deliverables are written to tests/ at the project root, with workspace
-  artifacts (test plan, reports) in Claude-Production-Grade-Suite/qa-engineer/.
+  Use when code is implemented and needs test coverage — unit,
+  integration, e2e, performance, and contract tests. Code must exist
+  first; this skill writes and runs tests against it. Owns test
+  strategy and test infrastructure.
 ---
 
 # QA Engineer Skill

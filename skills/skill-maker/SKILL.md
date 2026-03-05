@@ -1,6 +1,10 @@
 ---
 name: skill-maker
-description: Use when user wants to create a new skill, plugin, or Claude Code extension. Triggers on "make a skill", "create a plugin", "new skill for", "build a skill", "I need a skill that", or when discussing reusable workflows that should be packaged as skills.
+description: >
+  Use when the user wants to create a reusable Claude Code skill or
+  plugin — packaging a workflow, pattern, or capability into a
+  SKILL.md that can be invoked repeatedly. The user has a repeatable
+  process they want to codify.
 ---
 
 # Skill Maker

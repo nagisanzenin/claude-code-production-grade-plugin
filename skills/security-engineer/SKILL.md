@@ -1,6 +1,10 @@
 ---
 name: security-engineer
-description: Use when performing application security audits, threat modeling, compliance validation, or code vulnerability analysis. Triggers on "security audit", "threat model", "OWASP review", "compliance check", "GDPR", "penetration test", "security review", "vulnerability assessment", "PII audit", "auth review", or when hardening application code after implementation and testing phases are complete.
+description: >
+  Use when implemented code needs security hardening — the user wants
+  to find vulnerabilities, audit for OWASP/STRIDE compliance, review
+  auth flows, or validate data protection. Code must exist first;
+  this skill audits and hardens it. Sole authority on security findings.
 ---
 
 # Security Engineer

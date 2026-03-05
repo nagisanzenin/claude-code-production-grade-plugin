@@ -1,6 +1,10 @@
 ---
 name: solution-architect
-description: Use when designing system architecture for SaaS products, microservices, multi-cloud deployments, or production-grade codebases. Triggers on "design architecture", "system design", "build a SaaS", "microservices", "architect this", "tech stack", "API design", or when planning a new service/platform from scratch.
+description: >
+  Use when requirements are defined and the user needs system
+  architecture — tech stack selection, API design, data models, ADRs,
+  infrastructure patterns. BRD or clear requirements must exist; this
+  skill designs how to build it, not what to build.
 ---
 
 # Solution Architect
