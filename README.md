@@ -22,6 +22,14 @@
 
 <br>
 
+## Built With This Plugin
+
+| Project | Live | Description |
+|---------|------|-------------|
+| **PingBase** | [pingbasez.vercel.app](https://pingbasez.vercel.app/) | SaaS built end-to-end with the production-grade pipeline |
+
+---
+
 ## Release Timeline
 
 ```
