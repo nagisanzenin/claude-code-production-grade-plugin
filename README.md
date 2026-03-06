@@ -13,6 +13,28 @@ Build a complete SaaS from scratch, add a feature to existing code, harden befor
 
 > **v4.2** — Adaptive routing with 10 execution modes. Smart request classification. Full greenfield builds, feature additions, code hardening, deployment, testing, review, architecture, documentation, exploration, optimization. 4 engagement modes. Scale-driven architecture. Quality-first parallelism.
 
+### Release Timeline
+
+```
+2026-03-06  v4.2  ●━━━ Adaptive routing, 10 execution modes, everyday SWE work
+                  │
+2026-03-05  v4.1  ●━━━ Engagement modes, scale-driven architecture, adaptive interviews
+                  │
+2026-03-04  v4.0  ●━━━ Two-wave parallelism, internal skill agents, dynamic task generation
+                  │
+2026-03-04  v3.3  ●━━━ Brownfield-safe — works on existing codebases
+                  │
+2026-03-03  v3.2  ●━━━ Auto-update, MECE intent routing, protocol crash fix
+                  │
+2026-03-02  v3.1  ●━━━ Polymath co-pilot — the 14th skill
+                  │
+2026-03-01  v3.0  ●━━━ Full rewrite — Teams/TaskList, 7 parallel points, shared protocols
+                  │
+2026-02-28  v2.0  ●━━━ 13 bundled skills, unified workspace, prescriptive UX
+                  │
+2026-02-24  v1.0  ●━━━ Initial release — autonomous DEFINE>BUILD>HARDEN>SHIP>SUSTAIN
+```
+
 ### Quick Start
 
 ```bash
@@ -323,32 +345,6 @@ Native Claude Code Teams/TaskList. No custom state files.
 4. Open a Pull Request
 
 **Adding a skill:** Create `skills/your-skill-name/SKILL.md` with `---` frontmatter. For large skills, use the router + phases pattern.
-
----
-
-## Release Timeline
-
-```
-    v4.2  ●━━━ Adaptive routing, 10 execution modes, everyday SWE work support
-          │
-    v4.1  ●━━━ Engagement modes, scale-driven architecture fitness function, adaptive interviews
-          │
-    v4.0  ●━━━ Two-wave parallelism, internal skill agents, dynamic task generation
-          │
-    v3.3  ●━━━ Brownfield-safe — works on existing codebases
-          │
-    v3.2  ●━━━ Auto-update, MECE intent routing, protocol crash fix
-          │
-    v3.1  ●━━━ Polymath co-pilot — the 14th skill
-          │
-    v3.0  ●━━━ Full rewrite — Teams/TaskList, 7 parallel points, shared protocols
-          │
-    v2.0  ●━━━ 13 bundled skills, unified workspace, prescriptive UX
-          │
-    v1.0  ●━━━ Initial release — autonomous DEFINE>BUILD>HARDEN>SHIP>SUSTAIN
-```
-
-See [CHANGELOG.md](./CHANGELOG.md) for full details.
 
 ---
 
