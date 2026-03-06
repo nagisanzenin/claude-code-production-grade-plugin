@@ -2,6 +2,36 @@
 
 This phase manages tasks T7 (DevOps IaC), T8 (Remediation), T9 (SRE), T10 (Data Scientist). Features PARALLEL #5 and #6.
 
+## Visual Output
+
+Print pipeline dashboard with SHIP ● active on phase start, then:
+
+```
+  → Starting SHIP phase
+```
+
+On PARALLEL #5 completion:
+```
+┌─ SHIP: Infra + Remediation COMPLETE ────── ⏱ {time} ─┐
+│                                                        │
+│  ✓ DevOps         {N} Terraform modules, {M} workflows │
+│  ✓ Remediation    {N} Critical/{M} High fixed          │
+│                                                        │
+│  → Starting SRE + Data Scientist                       │
+└────────────────────────────────────────────────────────┘
+```
+
+On PARALLEL #6 completion:
+```
+┌─ SHIP COMPLETE ───────────────────────────── ⏱ {time} ─┐
+│                                                          │
+│  ✓ SRE              {N} SLOs, {M} alerts, {K} runbooks  │
+│  ✓ Data Scientist    {N} optimizations (or skipped)      │
+│                                                          │
+│  → Presenting Gate 3: Production Readiness               │
+└──────────────────────────────────────────────────────────┘
+```
+
 ## Authority Boundaries
 
 - **devops** owns infrastructure provisioning, CI/CD, monitoring setup — does NOT define SLOs

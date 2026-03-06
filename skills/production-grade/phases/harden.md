@@ -68,6 +68,20 @@ When complete, mark your task as completed.""",
 )
 ```
 
+## Visual Output
+
+Print pipeline dashboard with HARDEN ● active on phase start. Then print wave announcement:
+```
+┌─ HARDEN ─────────────────────────────── 3 agents ─┐
+│                                                     │
+│  T5   QA Engineer          implementing tests       │
+│  T6a  Security Engineer    code audit + dep scan    │
+│  T6b  Code Reviewer        arch + quality review    │
+│                                                     │
+│  All agents launched. Working autonomously...       │
+└─────────────────────────────────────────────────────┘
+```
+
 ## Post-HARDEN: Remediation Preparation
 
 After all HARDEN tasks complete:
@@ -76,14 +90,28 @@ After all HARDEN tasks complete:
 3. Filter Critical/High severity findings
 4. If any Critical/High exist → T8 (Remediation in SHIP phase) receives the findings list
 5. Medium/Low → documented but do not block pipeline
-6. Print HARDEN summary:
+6. Print the checkmark cascade, then findings summary:
 ```
-━━━ HARDEN Summary ━━━━━━━━━━━━━━━━━━━━━━
-✓ QA: [N] tests passed, [M] findings
-✓ Security: [N] findings ([M] Critical/High auto-fixed)
-✓ Code Review: [N] findings
-Remediation needed: [X] Critical/High items
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+┌─ HARDEN COMPLETE ─────────────────────── ⏱ {time} ─┐
+│                                                      │
+│  ✓ QA Engineer          {N} tests, {M} passing       │
+│  ✓ Security Engineer    {N} findings ({M} Crit/High) │
+│  ✓ Code Reviewer        {N} findings ({M} Crit/High) │
+│                                                      │
+│  3/3 complete                                        │
+└──────────────────────────────────────────────────────┘
+
+━━━ Findings ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Critical   {N}    {top finding description}
+                    {second finding if applicable}
+  High       {N}    {summary}
+  Medium     {N}    —
+  Low        {N}    —
+  ─────────────
+  Total      {N}    deduplicated by file:line
+
+  → {N} Critical/High items entering remediation
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 ## Handoff to SHIP

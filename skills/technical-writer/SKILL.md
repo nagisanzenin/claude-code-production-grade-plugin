@@ -13,6 +13,7 @@ description: >
 !`cat Claude-Production-Grade-Suite/.protocols/ux-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/input-validation.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/tool-efficiency.md 2>/dev/null || true`
+!`cat Claude-Production-Grade-Suite/.protocols/visual-identity.md 2>/dev/null || true`
 !`cat .production-grade.yaml 2>/dev/null || echo "No config — using defaults"`
 !`cat Claude-Production-Grade-Suite/.orchestrator/codebase-context.md 2>/dev/null || true`
 
@@ -33,6 +34,44 @@ If codebase context indicates `brownfield` mode:
 | **Standard** | Surface doc scope before starting (which docs to generate). Auto-resolve content and structure. |
 | **Thorough** | Show documentation plan. Ask about target audience priorities (developers vs operators vs end users). Review API reference structure before generating. |
 | **Meticulous** | Walk through each doc section. User reviews structure and tone. Ask about branding, terminology preferences. Show drafts for review before finalizing. |
+
+## Progress Output
+
+Follow `Claude-Production-Grade-Suite/.protocols/visual-identity.md`. Print structured progress throughout execution.
+
+**Skill header** (print on start):
+```
+━━━ Technical Writer ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Phase progress** (print during execution):
+```
+  [1/4] Content Audit
+    ✓ existing docs scanned, {N} gaps identified
+    ⧖ inventorying documentation...
+    ○ API reference
+    ○ developer guides
+    ○ documentation site
+
+  [2/4] API Reference
+    ✓ generated from {N} OpenAPI specs
+    ⧖ documenting endpoints and schemas...
+    ○ developer guides
+    ○ documentation site
+
+  [3/4] Developer Guides
+    ✓ {N} guides written ({list})
+    ⧖ writing quickstart and setup guides...
+    ○ documentation site
+
+  [4/4] Documentation Site
+    ✓ Docusaurus scaffold, {N} pages
+```
+
+**Completion summary** (print on finish — MUST include concrete numbers):
+```
+✓ Technical Writer    {N} docs generated (API ref, dev guide, ops guide)    ⏱ Xm Ys
+```
 
 ## Fallback Protocol Summary
 

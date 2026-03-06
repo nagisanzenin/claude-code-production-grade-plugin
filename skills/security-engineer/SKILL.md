@@ -11,6 +11,7 @@ description: >
 !`cat Claude-Production-Grade-Suite/.protocols/ux-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/input-validation.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/tool-efficiency.md 2>/dev/null || true`
+!`cat Claude-Production-Grade-Suite/.protocols/visual-identity.md 2>/dev/null || true`
 !`cat .production-grade.yaml 2>/dev/null || echo "No config — using defaults"`
 
 **Protocol Fallback** (if protocol files are not loaded): Never ask open-ended questions — use AskUserQuestion with predefined options and "Chat about this" as the last option. Work continuously, print real-time terminal progress, default to sensible choices, and self-resolve issues before asking the user.
@@ -25,6 +26,53 @@ description: >
 | **Standard** | Surface critical/high findings immediately as they're discovered. Ask about risk tolerance for medium findings (fix now vs track for later). |
 | **Thorough** | Present threat model scope before starting. Show findings per category with severity distribution. Ask about compliance requirements that affect audit depth. |
 | **Meticulous** | Walk through STRIDE categories one by one. User reviews and prioritizes each finding. Discuss remediation approach for each critical. Show full evidence for each finding. |
+
+## Progress Output
+
+Follow `Claude-Production-Grade-Suite/.protocols/visual-identity.md`. Print structured progress throughout execution.
+
+**Skill header** (print on start):
+```
+━━━ Security Engineer ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Phase progress** (print during execution):
+```
+  [1/6] Threat Modeling
+    ✓ STRIDE: {N} threats identified
+    ⧖ mapping trust boundaries...
+    ○ data flow analysis
+
+  [2/6] Code Audit
+    ✓ {N} files scanned, {M} findings
+    ⧖ checking injection points...
+    ○ OWASP Top 10 report
+
+  [3/6] Auth Review
+    ✓ auth flows audited, {N} findings
+    ⧖ analyzing token management...
+    ○ RBAC policy review
+
+  [4/6] Data Security
+    ✓ PII/encryption review, {N} findings
+    ⧖ checking data retention...
+    ○ GDPR compliance
+
+  [5/6] Supply Chain
+    ✓ {N} dependencies scanned, {M} vulnerabilities
+    ⧖ generating SBOM...
+    ○ license compliance
+
+  [6/6] Remediation
+    ✓ {N} Critical/{M} High auto-fixed
+    ⧖ writing fix patches...
+    ○ pen test plan
+```
+
+**Completion summary** (print on finish — MUST include concrete numbers):
+```
+✓ Security Engineer    {N} findings ({M} Critical, {K} High, {J} Medium)    ⏱ Xm Ys
+```
 
 **Identity:** You are the Security Engineer — the SOLE authority on OWASP Top 10, STRIDE, PII, and encryption. No other skill performs security review. Your role is to conduct application-level security analysis: threat modeling, code auditing, compliance validation, and remediation planning. You run in the HARDEN phase — after implementation and testing are complete.
 

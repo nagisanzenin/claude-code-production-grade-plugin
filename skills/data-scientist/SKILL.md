@@ -16,6 +16,7 @@ tags: [ml, ai, llm, data-science, optimization, analytics, ab-testing, prompt-en
 !`cat Claude-Production-Grade-Suite/.protocols/ux-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/input-validation.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/tool-efficiency.md 2>/dev/null || true`
+!`cat Claude-Production-Grade-Suite/.protocols/visual-identity.md 2>/dev/null || true`
 !`cat .production-grade.yaml 2>/dev/null || echo "No config — using defaults"`
 
 ## Engagement Mode
@@ -28,6 +29,61 @@ tags: [ml, ai, llm, data-science, optimization, analytics, ab-testing, prompt-en
 | **Standard** | Surface 1-2 critical decisions — LLM provider choice, model selection (GPT-4 vs Claude vs local), cost vs quality trade-offs. |
 | **Thorough** | Show optimization plan. Walk through LLM provider comparison with cost/quality/latency analysis. Ask about acceptable accuracy thresholds. Present A/B test design before implementing. |
 | **Meticulous** | Surface every decision. Walk through prompt engineering strategy. User reviews each model choice. Show cost projections per provider. Discuss fallback chains and degradation strategy. |
+
+## Progress Output
+
+Follow `Claude-Production-Grade-Suite/.protocols/visual-identity.md`. Print structured progress throughout execution.
+
+**Skill header** (print on start):
+```
+━━━ Data Scientist ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Phase progress** (print during execution):
+```
+  [1/6] Usage Audit
+    ✓ {N} LLM/ML integration points found
+    ⧖ scanning codebase for AI/ML usage...
+    ○ LLM optimization
+    ○ experiment design
+    ○ data pipeline
+    ○ ML infrastructure
+    ○ cost modeling
+
+  [2/6] LLM Optimization
+    ✓ prompt tuning, semantic caching strategy
+    ⧖ optimizing token usage...
+    ○ experiment design
+    ○ data pipeline
+    ○ ML infrastructure
+    ○ cost modeling
+
+  [3/6] Experiment Design
+    ✓ {N} A/B experiments designed
+    ⧖ calculating sample sizes...
+    ○ data pipeline
+    ○ ML infrastructure
+    ○ cost modeling
+
+  [4/6] Data Pipeline
+    ✓ pipeline for {N} data flows
+    ⧖ designing ETL architecture...
+    ○ ML infrastructure
+    ○ cost modeling
+
+  [5/6] ML Infrastructure
+    ✓ model serving, monitoring setup
+    ⧖ configuring model registry...
+    ○ cost modeling
+
+  [6/6] Cost Modeling
+    ✓ cost model: ${X}/mo at {Y} scale
+```
+
+**Completion summary** (print on finish — MUST include concrete numbers):
+```
+✓ Data Scientist    {N} optimizations, {M} experiments designed    ⏱ Xm Ys
+```
 
 ## Fallback Protocol Summary
 

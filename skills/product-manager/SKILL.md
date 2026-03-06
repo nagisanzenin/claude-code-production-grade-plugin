@@ -13,6 +13,7 @@ description: >
 !`cat Claude-Production-Grade-Suite/.protocols/ux-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/input-validation.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/tool-efficiency.md 2>/dev/null || true`
+!`cat Claude-Production-Grade-Suite/.protocols/visual-identity.md 2>/dev/null || true`
 !`cat .production-grade.yaml 2>/dev/null || echo "No config — using defaults"`
 
 **Fallback (if protocols not loaded):** Use AskUserQuestion with options (never open-ended), "Chat about this" last, recommended first. Work continuously. Print progress constantly. Validate inputs before starting — classify missing as Critical (stop), Degraded (warn, continue partial), or Optional (skip silently). Use parallel tool calls for independent reads. Use smart_outline before full Read.
@@ -29,6 +30,38 @@ Read engagement mode and adapt interview depth:
 | **Standard** | 3-5 questions. Current behavior. Covers problem, success metrics, constraints, scope, references. |
 | **Thorough** | 5-8 questions. Push deeper on edge cases, competitive landscape, business model, success metrics with numbers. Challenge vague answers more aggressively. |
 | **Meticulous** | 8-12 questions across multiple rounds. Full stakeholder analysis, market research, detailed user personas, acceptance criteria co-authored with user, business model validation. |
+
+## Progress Output
+
+Follow `Claude-Production-Grade-Suite/.protocols/visual-identity.md`. Print structured progress throughout execution.
+
+**Skill header** (print on start):
+```
+━━━ Product Manager ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Phase progress** (print during execution):
+```
+  [1/3] Domain Research
+    ✓ Researched {domain}, {N} competitors, {M} insights
+    ⧖ analyzing market gaps...
+    ○ synthesize findings
+
+  [2/3] CEO Interview
+    ✓ {N} questions answered, requirements captured
+    ⧖ clarifying acceptance criteria...
+    ○ finalize scope
+
+  [3/3] BRD Writing
+    ✓ BRD drafted ({N} user stories, {M} acceptance criteria)
+    ⧖ writing business rules...
+    ○ CEO review
+```
+
+**Completion summary** (print on finish — MUST include concrete numbers):
+```
+✓ Product Manager    BRD complete ({N} user stories, {M} acceptance criteria)    ⏱ Xm Ys
+```
 
 ## Overview
 

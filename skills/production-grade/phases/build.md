@@ -2,6 +2,43 @@
 
 This phase manages tasks T3a (Backend), T3b (Frontend), and T4 (DevOps Containerization). Features PARALLEL #1 and #2.
 
+## Visual Output
+
+Print pipeline dashboard with BUILD ● active on phase start. Then print Wave A announcement:
+```
+┌─ WAVE A: BUILD + ANALYSIS ────────────── {N} agents ─┐
+│                                                        │
+│  T3a  Software Engineer    {services from architecture}│
+│  T3b  Frontend Engineer    {pages from BRD}            │
+│  T4a  DevOps               Dockerfiles + CI skeleton   │
+│  T5a  QA Engineer          test plan from BRD          │
+│  T6a  Security Engineer    STRIDE threat model         │
+│  T6b  Code Reviewer        conformance checklist       │
+│  T9a  SRE                  SLO definitions             │
+│                                                        │
+│  All agents launched. Working autonomously...          │
+└────────────────────────────────────────────────────────┘
+```
+
+When Wave A completes, print the checkmark cascade:
+```
+┌─ WAVE A COMPLETE ─────────────────────── ⏱ {time} ─┐
+│                                                      │
+│  ✓ Software Engineer    {N} services, {M} endpoints  │
+│  ✓ Frontend Engineer    {N} pages, {M} components    │
+│  ✓ DevOps               {N} Dockerfiles, 1 compose   │
+│  ✓ QA Engineer          {N} test cases planned       │
+│  ✓ Security Engineer    STRIDE: {N} threats          │
+│  ✓ Code Reviewer        {N} checkpoints defined      │
+│  ✓ SRE                  {N} SLOs, {M} alerts         │
+│                                                      │
+│  {N}/{N} complete                                    │
+│  → Starting Wave B ({M} agents against written code) │
+└──────────────────────────────────────────────────────┘
+```
+
+Then print Wave B announcement and completion similarly. Each agent's completion line MUST include concrete numbers.
+
 ## Pre-Flight
 
 Read `.production-grade.yaml` to determine:

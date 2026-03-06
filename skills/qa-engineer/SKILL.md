@@ -13,6 +13,7 @@ description: >
 !`cat Claude-Production-Grade-Suite/.protocols/ux-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/input-validation.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/tool-efficiency.md 2>/dev/null || true`
+!`cat Claude-Production-Grade-Suite/.protocols/visual-identity.md 2>/dev/null || true`
 !`cat .production-grade.yaml 2>/dev/null || echo "No config — using defaults"`
 !`cat Claude-Production-Grade-Suite/.orchestrator/codebase-context.md 2>/dev/null || true`
 
@@ -28,6 +29,34 @@ description: >
 | **Standard** | Surface 1-2 critical decisions — coverage targets, e2e scope (which flows to test), performance thresholds. |
 | **Thorough** | Show full test plan before implementing. Ask about test data strategy, which edge cases matter most, performance SLAs to validate. Show test results summary per category. |
 | **Meticulous** | Walk through test plan per service. User reviews test scenarios before implementation. Show each test category's results. Ask about flaky test tolerance and retry strategy. |
+
+## Progress Output
+
+Follow `Claude-Production-Grade-Suite/.protocols/visual-identity.md`. Print structured progress throughout execution.
+
+**Skill header** (print on start):
+```
+━━━ QA Engineer ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Phase progress** (print during execution):
+```
+  [1/2] Test Planning
+    ✓ {N} test cases across {M} categories
+    ⧖ building traceability matrix...
+    ○ coverage targets
+
+  [2/2] Test Implementation
+    ✓ unit: {N} tests
+    ✓ integration: {N} tests
+    ⧖ e2e: writing user flow specs...
+    ○ performance: load tests
+```
+
+**Completion summary** (print on finish — MUST include concrete numbers):
+```
+✓ QA Engineer    {N} tests written, {M} passing, {K} failing    ⏱ Xm Ys
+```
 
 ## Brownfield Awareness
 

@@ -13,6 +13,7 @@ description: >
 !`cat Claude-Production-Grade-Suite/.protocols/ux-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/input-validation.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/tool-efficiency.md 2>/dev/null || true`
+!`cat Claude-Production-Grade-Suite/.protocols/visual-identity.md 2>/dev/null || true`
 !`cat .production-grade.yaml 2>/dev/null || echo "No config — using defaults"`
 !`cat Claude-Production-Grade-Suite/.orchestrator/codebase-context.md 2>/dev/null || true`
 
@@ -33,6 +34,52 @@ If codebase context indicates `brownfield` mode:
 | **Standard** | Surface SLO targets for user confirmation (these define the error budget — important to get right). Auto-resolve chaos experiments and runbook scope. |
 | **Thorough** | Walk through SLO definitions with trade-off analysis. Show chaos experiment plan. Ask about on-call structure and incident severity definitions. |
 | **Meticulous** | Individually review each SLO with error budget impact. Walk through each chaos experiment scenario. User reviews each runbook. Discuss capacity projections. |
+
+## Progress Output
+
+Follow `Claude-Production-Grade-Suite/.protocols/visual-identity.md`. Print structured progress throughout execution.
+
+**Skill header** (print on start):
+```
+━━━ SRE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Phase progress** (print during execution):
+```
+  [1/5] Readiness Assessment
+    ✓ checklist: {N}/{M} passed
+    ⧖ evaluating health checks, graceful shutdown...
+    ○ SLO definitions
+    ○ chaos engineering
+    ○ incident management
+    ○ capacity planning
+
+  [2/5] SLO Definitions
+    ✓ {N} SLOs, {M} SLIs defined
+    ⧖ calculating error budgets...
+    ○ chaos engineering
+    ○ incident management
+    ○ capacity planning
+
+  [3/5] Chaos Engineering
+    ✓ {N} experiments designed
+    ⧖ defining steady-state hypotheses...
+    ○ incident management
+    ○ capacity planning
+
+  [4/5] Incident Management
+    ✓ {N} runbooks written
+    ⧖ drafting escalation policies...
+    ○ capacity planning
+
+  [5/5] Capacity Planning
+    ✓ capacity model for {N} services
+```
+
+**Completion summary** (print on finish — MUST include concrete numbers):
+```
+✓ SRE    {N} SLOs, {M} alerts, {K} runbooks    ⏱ Xm Ys
+```
 
 ## Fallback Protocol Summary
 

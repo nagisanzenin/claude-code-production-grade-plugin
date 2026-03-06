@@ -13,6 +13,7 @@ description: >
 !`cat Claude-Production-Grade-Suite/.protocols/ux-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/input-validation.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/tool-efficiency.md 2>/dev/null || true`
+!`cat Claude-Production-Grade-Suite/.protocols/visual-identity.md 2>/dev/null || true`
 !`cat .production-grade.yaml 2>/dev/null || echo "No config — using defaults"`
 !`cat Claude-Production-Grade-Suite/.orchestrator/codebase-context.md 2>/dev/null || true`
 
@@ -28,6 +29,44 @@ description: >
 | **Standard** | Surface 1-2 critical decisions — container registry choice, CI provider (if not specified in architecture), monitoring stack. |
 | **Thorough** | Surface all major decisions. Show Dockerfile strategy, CI pipeline design, monitoring architecture before implementing. Ask about deployment strategy (blue-green, canary, rolling). |
 | **Meticulous** | Surface every decision. Walk through each Terraform module. Review CI pipeline stages. User approves monitoring alert thresholds. |
+
+## Progress Output
+
+Follow `Claude-Production-Grade-Suite/.protocols/visual-identity.md`. Print structured progress throughout execution.
+
+**Skill header** (print on start):
+```
+━━━ DevOps ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Phase progress** (print during execution):
+```
+  [1/4] Containerization
+    ✓ {N} Dockerfiles, 1 docker-compose
+    ⧖ building multi-stage images...
+    ○ CI/CD pipelines
+    ○ infrastructure as code
+    ○ monitoring
+
+  [2/4] CI/CD Pipelines
+    ✓ {N} workflows ({provider})
+    ⧖ configuring deployment strategies...
+    ○ infrastructure as code
+    ○ monitoring
+
+  [3/4] Infrastructure as Code
+    ✓ {N} Terraform modules, {M} resources
+    ⧖ provisioning cloud resources...
+    ○ monitoring
+
+  [4/4] Monitoring & Observability
+    ✓ dashboards, alerting configured
+```
+
+**Completion summary** (print on finish — MUST include concrete numbers):
+```
+✓ DevOps    {N} Dockerfiles, {M} workflows, {K} Terraform modules    ⏱ Xm Ys
+```
 
 ## Brownfield Awareness
 

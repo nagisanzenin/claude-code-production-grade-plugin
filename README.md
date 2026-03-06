@@ -2,7 +2,7 @@
 
 [![GitHub stars](https://img.shields.io/github/stars/nagisanzenin/claude-code-production-grade-plugin?style=social)](https://github.com/nagisanzenin/claude-code-production-grade-plugin)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-4.2.0-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-4.3.0-blue.svg)]()
 [![Skills](https://img.shields.io/badge/skills-14-green.svg)]()
 [![Modes](https://img.shields.io/badge/modes-10-purple.svg)]()
 [![Parallel Points](https://img.shields.io/badge/parallel%20points-10+-orange.svg)]()
@@ -11,11 +11,13 @@
 
 Build a complete SaaS from scratch, add a feature to existing code, harden before launch, set up CI/CD, write tests, review code quality — the orchestrator routes to the right skills automatically.
 
-> **v4.2** — Adaptive routing with 10 execution modes. Smart request classification. Full greenfield builds, feature additions, code hardening, deployment, testing, review, architecture, documentation, exploration, optimization. 4 engagement modes. Scale-driven architecture. Quality-first parallelism.
+> **v4.3** — Visual identity and observability overhaul. Pipeline dashboard, gate ceremonies, wave announcements with checkmark cascades, concrete metrics in every status line, numbered phase progress, before→after deltas, timing at phase/wave/total level. Same adaptive routing, 10 modes, 14 skills.
 
 ### Release Timeline
 
 ```
+2026-03-06  v4.3  ●━━━ Visual identity, observability, pipeline dashboard, gate ceremonies
+                  │
 2026-03-06  v4.2  ●━━━ Adaptive routing, 10 execution modes, everyday SWE work
                   │
 2026-03-05  v4.1  ●━━━ Engagement modes, scale-driven architecture, adaptive interviews

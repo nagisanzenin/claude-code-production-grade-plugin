@@ -2,6 +2,27 @@
 
 This phase manages tasks T11 (Technical Writer), T12 (Skill Maker), and T13 (Compound Learning + Final Assembly). Features PARALLEL #7.
 
+## Visual Output
+
+Print pipeline dashboard with SUSTAIN ● active on phase start, then:
+
+```
+  → Starting SUSTAIN phase (documentation + skills)
+```
+
+On PARALLEL #7 completion:
+```
+┌─ SUSTAIN COMPLETE ────────────────────────── ⏱ {time} ─┐
+│                                                          │
+│  ✓ Technical Writer    {N} docs (API ref, dev guide...)  │
+│  ✓ Skill Maker         {N} project-specific skills       │
+│                                                          │
+│  → Final assembly and compound learning                  │
+└──────────────────────────────────────────────────────────┘
+```
+
+After T13 completes, print the final summary template from the orchestrator.
+
 ## PARALLEL #7: T11 + T12
 
 ```python

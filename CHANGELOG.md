@@ -2,6 +2,30 @@
 
 All notable changes to the Production Grade Plugin.
 
+## [4.3.0] — 2026-03-06
+
+### Added
+- **Visual identity protocol** — new shared protocol (`visual-identity.md`) defining the complete design language: sleek, elegant, high-tech aesthetic. Container hierarchy (Tier 1 double-line for key moments, Tier 2 single-line for data grids, Tier 3 heavy rules for section headers). Standardized icon vocabulary (`◆ ⬥ ● ○ ✓ ✗ ⧖ ⚠ →`). No emoji — Unicode symbols only for monospace alignment.
+- **Pipeline dashboard** — `╔═══╗` status board printed at kickoff and every phase transition. Shows all 5 phases with status (`○ pending` → `● active` → `✓ complete`), elapsed time per phase, and total elapsed time. The dashboard re-rendering IS the progress animation.
+- **Gate ceremonies** — visual framing before each approval gate. Prints concrete metrics block (key-value pairs with numbers) between `━━━` rules with `⬥ GATE N` header and elapsed time. Gives decision moments visual weight and authority.
+- **Wave announcements** — Tier 2 boxes showing all agents in a parallel wave on launch, then checkmark cascade with concrete metrics on completion. Peak visual moment: rapid `✓` lines with per-agent results.
+- **Transition announcements** — `→` prefixed lines between phases and waves explaining what's next. Eliminates "what's happening?" anxiety.
+- **Numbered phase progress** — every skill prints `[1/N]` phase progress with `✓`/`⧖`/`○` step indicators and concrete counts. Users always know where each skill is in its work.
+- **Concrete completion summaries** — every agent completion line MUST include numbers. `✓ Security Engineer    12 findings (2 Critical, 3 High, 7 Medium)` not `✓ Security Engineer — complete`.
+- **Before→after deltas** — `12 findings → 0 Critical remaining`, `0% → 94% coverage`. Proves transformation happened.
+- **Findings severity grid** — structured display with Critical/High detail, Medium/Low counts, dedup total.
+- **Elapsed timing** — tracked at 3 levels: total pipeline, per-phase, per-wave. Not per-step (too granular).
+- **Streaming as animation** — documented that Claude's token-by-token streaming IS our animation channel. Visual blocks designed for progressive reveal consumption.
+
+### Changed
+- **UX Protocol Rule 5** updated to reference visual identity protocol with concrete formatting requirements.
+- **Orchestrator kickoff** replaced bare `━━━` banner with full pipeline dashboard.
+- **All 3 gate templates** upgraded with ceremony framing (metrics block + `⬥` header).
+- **Final summary** expanded from compact box to detailed per-phase breakdown with bottom-line stats (agents used, tasks completed, files created, tests passing, vulnerabilities remaining).
+- **All 5 phase dispatchers** updated with visual output sections: phase banners, wave start/completion templates, transition announcements.
+- **All 13 sub-skills** updated with visual-identity protocol loading, numbered phase progress patterns, and structured completion summaries.
+- **Upgraded findings summary** in HARDEN phase from simple `✓` list to severity grid with critical finding details.
+
 ## [4.2.0] — 2026-03-06
 
 ### Added

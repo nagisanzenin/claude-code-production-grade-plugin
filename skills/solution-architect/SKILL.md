@@ -13,6 +13,7 @@ description: >
 !`cat Claude-Production-Grade-Suite/.protocols/ux-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/input-validation.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/tool-efficiency.md 2>/dev/null || true`
+!`cat Claude-Production-Grade-Suite/.protocols/visual-identity.md 2>/dev/null || true`
 !`cat .production-grade.yaml 2>/dev/null || echo "No config — using defaults"`
 !`cat Claude-Production-Grade-Suite/.orchestrator/codebase-context.md 2>/dev/null || true`
 
@@ -39,6 +40,48 @@ Read `Claude-Production-Grade-Suite/.orchestrator/settings.md` at startup. Adapt
 | **Standard** | 5-7 questions across 2 rounds. Scale sizing + constraints. Fitness-derived architecture. |
 | **Thorough** | 12-15 questions across 4 structured rounds. Full capacity planning. Trade-off analysis. Architecture alternatives. |
 | **Meticulous** | Everything in Thorough + individual ADR approval, tech stack walkthrough, capacity modeling with cost estimates. |
+
+## Progress Output
+
+Follow `Claude-Production-Grade-Suite/.protocols/visual-identity.md`. Print structured progress throughout execution.
+
+**Skill header** (print on start):
+```
+━━━ Solution Architect ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Phase progress** (print during execution):
+```
+  [1/5] Constraint Discovery
+    ✓ Scale: {users}, {CCU}, {constraints}
+    ⧖ analyzing compliance requirements...
+    ○ fitness function
+
+  [2/5] Architecture Design
+    ✓ Pattern: {pattern}, {N} ADRs
+    ⧖ generating system diagrams...
+    ○ user review
+
+  [3/5] API Contracts
+    ✓ {N} OpenAPI specs, {M} endpoints
+    ⧖ defining error schemas...
+    ○ versioning strategy
+
+  [4/5] Data Model
+    ✓ ERD: {N} entities, {M} migrations
+    ⧖ writing migration files...
+    ○ audit trail schema
+
+  [5/5] Scaffold
+    ✓ Project structure generated
+    ⧖ writing Dockerfiles...
+    ○ docker-compose
+```
+
+**Completion summary** (print on finish — MUST include concrete numbers):
+```
+✓ Solution Architect    {pattern}, {N} ADRs, {M} endpoints, scaffold generated    ⏱ Xm Ys
+```
 
 ## Overview
 

@@ -2,6 +2,22 @@
 
 This phase manages tasks T1 (Product Manager) and T2 (Solution Architect). Sequential execution with Gate 1 and Gate 2.
 
+## Visual Output
+
+Print pipeline dashboard with DEFINE ● active on phase start:
+```
+  → Starting DEFINE phase
+```
+
+Each skill (PM, Architect) prints its own `━━━ [Skill Name] ━━━` header and `[1/N]` phase progress per visual-identity protocol.
+
+Print gate ceremony before each gate (see orchestrator Gate 1 and Gate 2 templates).
+
+On phase completion, print transition:
+```
+  → DEFINE complete, starting BUILD phase
+```
+
 ## Pre-Flight
 
 Read `.production-grade.yaml` for path overrides:

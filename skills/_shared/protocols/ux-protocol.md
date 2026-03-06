@@ -23,16 +23,27 @@ Work continuously until task complete or user presses ESC. Never ask "should I c
 
 ## RULE 5: Real-Time Terminal Updates
 
-Constantly print progress. Never go silent.
+Constantly print progress. Never go silent. Follow the visual identity protocol at `Claude-Production-Grade-Suite/.protocols/visual-identity.md` for all formatting.
+
+Key rules from visual identity:
+- Use `━━━ [Skill Name] ━━━` headers for skill-level sections
+- Show numbered phase progress: `[1/5] Phase Name`
+- Print `⧖` for in-progress, `✓` for complete, `○` for pending steps
+- Every `✓` line must include concrete counts (numbers prove work was done)
+- Completion summaries: `✓ [Skill Name]    {metrics with numbers}    ⏱ Xm Ys`
+
 ```
-━━━ [Phase/Task Name] ━━━━━━━━━━━━━━━━━━━━━━
+━━━ [Skill Name] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-⧖ Working on [current step]...
-✓ Step completed (details)
-✓ Step completed (details)
+  [1/N] Phase Name
+    ✓ Step completed (247 files scanned, 3 services found)
+    ⧖ Step in progress...
+    ○ Step pending
 
-━━━ Complete ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Summary: [what was produced]
+  [2/N] Next Phase
+    ○ ...
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 ## RULE 6: Autonomy

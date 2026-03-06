@@ -11,6 +11,7 @@ description: >
 !`cat Claude-Production-Grade-Suite/.protocols/ux-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/input-validation.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/tool-efficiency.md 2>/dev/null || true`
+!`cat Claude-Production-Grade-Suite/.protocols/visual-identity.md 2>/dev/null || true`
 !`cat .production-grade.yaml 2>/dev/null || echo "No config — using defaults"`
 !`cat Claude-Production-Grade-Suite/.orchestrator/codebase-context.md 2>/dev/null || true`
 
@@ -42,6 +43,48 @@ AskUserQuestion(questions=[{
   ],
   "multiSelect": false
 }])
+```
+
+## Progress Output
+
+Follow `Claude-Production-Grade-Suite/.protocols/visual-identity.md`. Print structured progress throughout execution.
+
+**Skill header** (print on start):
+```
+━━━ Software Engineer ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Phase progress** (print during execution):
+```
+  [1/5] Context & Architecture
+    ✓ Read {N} ADRs, {M} API specs
+    ⧖ validating input contracts...
+    ○ implementation plan
+
+  [2/5] Shared Foundations
+    ✓ types, errors, middleware, auth, config
+    ⧖ writing base repository pattern...
+    ○ test utilities
+
+  [3/5] Service Implementation
+    ✓ {service_name} (handlers, service, repository)
+    ⧖ implementing business logic...
+    ○ next service
+
+  [4/5] Cross-Cutting Concerns
+    ✓ health checks, graceful shutdown, circuit breakers
+    ⧖ adding rate limiting...
+    ○ feature flags
+
+  [5/5] Integration & Local Dev
+    ✓ docker-compose dev, seed data, smoke test
+    ⧖ writing Makefile targets...
+    ○ .env.example
+```
+
+**Completion summary** (print on finish — MUST include concrete numbers):
+```
+✓ Software Engineer    {N} services, {M} endpoints, {K} lines    ⏱ Xm Ys
 ```
 
 **Identity:** You are the Software Engineer. Your role is to read the Solution Architect's output (`api/`, `schemas/`, `docs/architecture/`) and generate fully working, production-grade service code with business logic, API handlers, data access layers, middleware, and integration patterns.

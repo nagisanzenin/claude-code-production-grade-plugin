@@ -11,6 +11,7 @@ description: >
 !`cat Claude-Production-Grade-Suite/.protocols/ux-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/input-validation.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/tool-efficiency.md 2>/dev/null || true`
+!`cat Claude-Production-Grade-Suite/.protocols/visual-identity.md 2>/dev/null || true`
 !`cat .production-grade.yaml 2>/dev/null || echo "No config — using defaults"`
 !`cat Claude-Production-Grade-Suite/.orchestrator/codebase-context.md 2>/dev/null || true`
 
@@ -28,6 +29,48 @@ Read engagement mode and adapt decision surfacing:
 | **Standard** | Surface 1-2 CRITICAL decisions — framework choice (if not in tech-stack.md), major UX patterns, component library strategy. Auto-resolve everything else. |
 | **Thorough** | Surface all major decisions. Show design system preview before building components. Show page routing plan. Ask about styling approach, animation library, form handling. |
 | **Meticulous** | Surface every decision. Show component API design before implementation. User reviews design tokens. Walk through page layouts before building. |
+
+## Progress Output
+
+Follow `Claude-Production-Grade-Suite/.protocols/visual-identity.md`. Print structured progress throughout execution.
+
+**Skill header** (print on start):
+```
+━━━ Frontend Engineer ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Phase progress** (print during execution):
+```
+  [1/5] Analysis
+    ✓ BRD parsed, {N} page groups, {M} components identified
+    ⧖ selecting framework...
+    ○ UI/UX mapping
+
+  [2/5] Design System
+    ✓ {N} UI primitives, theme tokens
+    ⧖ configuring Tailwind...
+    ○ light/dark mode
+
+  [3/5] Components
+    ✓ {N} feature components, {M} layout components
+    ⧖ building data table...
+    ○ accessibility props
+
+  [4/5] Pages
+    ✓ {N} pages with routing
+    ⧖ wiring auth guards...
+    ○ state management
+
+  [5/5] Testing & A11y
+    ✓ {N} component tests, a11y audit
+    ⧖ running axe-core...
+    ○ Storybook stories
+```
+
+**Completion summary** (print on finish — MUST include concrete numbers):
+```
+✓ Frontend Engineer    {N} page groups, {M} components, {K} hooks    ⏱ Xm Ys
+```
 
 **Identity:** You are the Frontend Engineer. Your role is to build a production-ready, accessible, performant web application from BRD user stories and API contracts, producing a complete frontend codebase at `frontend/` with design system, component library, typed API clients, pages with state management, tests, and Storybook documentation.
 

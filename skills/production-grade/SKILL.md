@@ -14,6 +14,7 @@ description: >
 !`cat CLAUDE.md 2>/dev/null || echo "No CLAUDE.md found"`
 !`ls Claude-Production-Grade-Suite/ 2>/dev/null || echo "No existing workspace"`
 !`cat .production-grade.yaml 2>/dev/null || echo "No config file — defaults apply"`
+!`cat Claude-Production-Grade-Suite/.protocols/visual-identity.md 2>/dev/null || true`
 
 ## Overview
 
@@ -93,10 +94,35 @@ For non-Full-Build modes, use the lightweight execution flows below. For Full Bu
 
 All modes share these behaviors:
 - Bootstrap workspace: `mkdir -p Claude-Production-Grade-Suite/.protocols/ Claude-Production-Grade-Suite/.orchestrator/`
-- Write shared protocols (same as Full Build step 3)
+- Write shared protocols (same as Full Build step 3, including `visual-identity.md`)
 - Read `.production-grade.yaml` for path overrides
 - Read existing workspace state if present
 - Engagement mode + parallelism: ask ONLY if mode involves 3+ skills. For 1-2 skill modes, use Standard engagement + Sequential execution (overhead of asking isn't worth it).
+
+### Non-Full-Build Visual Output
+
+**Mode banner** (print on start for all non-Full-Build modes):
+```
+━━━ {Mode Name} Mode ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Scope: {what will be done}
+  Skills: {skill list}
+  Files: {N} across {M} services/directories (if applicable)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Multi-skill completion** (for modes with 2+ skills):
+```
+┌─ {Mode Name} Complete ────────────────────── ⏱ {time} ─┐
+│                                                          │
+│  ✓ {Skill 1}    {concrete metrics}                       │
+│  ✓ {Skill 2}    {concrete metrics}                       │
+│  ✓ {Skill 3}    {concrete metrics}                       │
+│                                                          │
+│  {N}/{N} complete                                        │
+└──────────────────────────────────────────────────────────┘
+```
+
+**Single-skill modes** (Test, Review, Architect, Document, Explore): The skill prints its own `━━━ [Skill Name] ━━━` header and `[1/N]` phase progress. No orchestrator-level completion box needed.
 
 ### Feature Mode
 
@@ -118,10 +144,33 @@ Security + quality audit on existing code. No building, pure analysis + fixes.
 1. **Codebase scan** — read all existing code
 2. **Parallel:** Security Engineer + QA Engineer + Code Reviewer analyze the code simultaneously
 3. **Consolidated findings** — merge all findings, deduplicate, sort by severity
-4. **Present findings** — show Critical/High/Medium/Low counts with top issues
+4. **Present findings** — severity grid with Critical/High detail
 5. **Remediation** — fix Critical and High issues (with user confirmation)
 
 **1 gate:** After findings (step 4), before remediation.
+
+**Visual flow:**
+```
+━━━ Harden Mode ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Scope: Security + QA + Code Review on existing code
+  Files: {N} across {M} services
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ⧖ 3 agents analyzing in parallel...
+
+  ✓ QA Engineer          {N} tests written, {M} passing       ⏱ Xm Ys
+  ✓ Security Engineer    {N} findings ({M} Critical/High)     ⏱ Xm Ys
+  ✓ Code Reviewer        {N} findings ({M} Critical/High)     ⏱ Xm Ys
+
+━━━ Findings ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  Critical   {N}    {description}
+  High       {N}    {summary}
+  Medium     {N}    —
+  Low        {N}    —
+  ─────────────
+  Total      {N}    deduplicated by file:line
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
 
 ### Ship Mode
 
@@ -265,12 +314,25 @@ AskUserQuestion(questions=[{
 
 When mode is **Full Build**, follow this EXACT sequence:
 
-1. **Print kickoff banner:**
+1. **Print pipeline dashboard** (initial state — all pending):
 ```
-━━━ Production Grade Pipeline v{local_version} ━━━━━━━━━━━━━━━━━━
-Project: [extracted from user's message]
+╔══════════════════════════════════════════════════════════════╗
+║  ◆ PRODUCTION GRADE v{local_version}                        ║
+║  Project: [extracted from user's message]                    ║
+╠══════════════════════════════════════════════════════════════╣
+║                                                              ║
+║   DEFINE    ○ pending                                        ║
+║   BUILD     ○ pending                                        ║
+║   HARDEN    ○ pending                                        ║
+║   SHIP      ○ pending                                        ║
+║   SUSTAIN   ○ pending                                        ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+
 ⧖ Bootstrapping workspace...
 ```
+
+**Reprint this dashboard** at every phase transition and before every gate, updating phase statuses (`○ pending` → `● active` → `✓ complete ⏱ Xm Ys`). Track elapsed time per phase and total. This recurring dashboard IS the progress animation — the user sees the same template fill in over time.
 
 2. **Bootstrap workspace:**
 ```bash
@@ -286,6 +348,7 @@ mkdir -p Claude-Production-Grade-Suite/.orchestrator/
 | `input-validation.md` | 5-step validation: read config → probe inputs in parallel → classify Critical/Degraded/Optional → print gap summary → adapt scope |
 | `tool-efficiency.md` | Parallel tool calls, smart_outline before Read, Glob not find, Grep not grep, config-aware paths |
 | `conflict-resolution.md` | Authority hierarchy, dedup by file:line (keep highest severity), HARDEN→BUILD feedback loops (2 cycle max) |
+| `visual-identity.md` | Visual design language: container hierarchy (Tier 1/2/3), icon vocabulary, progress patterns, gate ceremonies, wave announcements, completion summaries, timing |
 
 Read these from the plugin's `skills/_shared/protocols/` directory and copy them. If plugin path is unavailable, write from the summaries above.
 
@@ -428,7 +491,7 @@ Create all 13 tasks with dependencies (see Task Dependency Graph). Use TaskCreat
 
 ## User Experience Protocol
 
-Follow the shared UX Protocol at `Claude-Production-Grade-Suite/.protocols/ux-protocol.md`. Key rules:
+Follow the shared UX Protocol at `Claude-Production-Grade-Suite/.protocols/ux-protocol.md` and the visual identity at `Claude-Production-Grade-Suite/.protocols/visual-identity.md`. Key rules:
 1. **NEVER** ask open-ended questions — always use AskUserQuestion with predefined options
 2. **"Chat about this"** always last option
 3. **Recommended option first** with `(Recommended)` suffix
@@ -452,10 +515,26 @@ This ensures non-technical users can understand what they're approving without t
 ### Strategic Gates (3 total)
 
 **Gate 1 — BRD Approval** (after T1):
+
+Print the pipeline dashboard (DEFINE ● active), then the gate ceremony:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ⬥ GATE 1 — Requirements Approval                  ⏱ {elapsed}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  User Stories       {N} with acceptance criteria
+  Stakeholders       {N} roles identified
+  Constraints        {key constraints summary}
+  Scope              {brief scope summary}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Then ask:
 ```python
 AskUserQuestion(questions=[{
   "question": "BRD complete: [X] user stories, [Y] acceptance criteria. Approve?",
-  "header": "Gate 1: BRD",
+  "header": "Gate 1: Requirements",
   "options": [
     {"label": "Approve — start architecture (Recommended)", "description": "BRD locked, proceed to Solution Architect"},
     {"label": "Show BRD details", "description": "Display the full BRD before deciding"},
@@ -467,10 +546,28 @@ AskUserQuestion(questions=[{
 ```
 
 **Gate 2 — Architecture Approval** (after T2):
+
+Print the pipeline dashboard (DEFINE ✓ complete), then the gate ceremony:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ⬥ GATE 2 — Architecture Approval                  ⏱ {elapsed}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Pattern      {architecture pattern}
+  Stack        {language} · {framework} · {database} · {cache}
+  Services     {N} bounded contexts
+  API          {N} endpoints across {M} specs
+  ADRs         {N} architecture decision records
+  Data         {N} entities, {M} migrations
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Then ask:
 ```python
 AskUserQuestion(questions=[{
   "question": "Architecture complete: [tech stack summary]. Approve to start building?",
-  "header": "Gate 2: Arch",
+  "header": "Gate 2: Architecture",
   "options": [
     {"label": "Approve — start building (Recommended)", "description": "Architecture locked, begin autonomous BUILD phase"},
     {"label": "Show architecture details", "description": "Walk through ADRs, diagrams, and API spec"},
@@ -482,10 +579,28 @@ AskUserQuestion(questions=[{
 ```
 
 **Gate 3 — Production Readiness** (after T9):
+
+Print the pipeline dashboard (DEFINE ✓, BUILD ✓, HARDEN ✓, SHIP ✓ complete), then the gate ceremony:
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ⬥ GATE 3 — Production Readiness                   ⏱ {elapsed}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Services     {N} built, all compiling
+  Tests        {N} passing, {M} coverage
+  Security     {N} findings → {M} Critical, {K} High remaining
+  Infra        {N} Dockerfiles, {M} Terraform modules
+  CI/CD        {N} workflows configured
+  SRE          {N} SLOs, {M} alerts, {K} runbooks
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Then ask:
 ```python
 AskUserQuestion(questions=[{
   "question": "All phases complete. [summary]. Ship it?",
-  "header": "Gate 3: Ship",
+  "header": "Gate 3: Production Readiness",
   "options": [
     {"label": "Ship it — production ready (Recommended)", "description": "Finalize assembly and deploy"},
     {"label": "Show full report", "description": "Display complete pipeline summary"},
@@ -499,6 +614,54 @@ AskUserQuestion(questions=[{
 ## Task Dependency Graph — Two-Wave Parallel Execution
 
 Dynamic task generation with two-wave parallelism. The orchestrator reads the architecture output (number of services, pages, modules) and generates tasks accordingly — one Agent per work unit.
+
+### Wave Announcements
+
+**When launching a wave**, print a Tier 2 box listing all agents and their tasks:
+```
+┌─ WAVE A ──────────────────────────────────── {N} agents ─┐
+│                                                           │
+│  T3a  Software Engineer    {service list from architecture}│
+│  T3b  Frontend Engineer    {page groups from BRD}         │
+│  T4a  DevOps               Dockerfiles + CI skeleton      │
+│  T5a  QA Engineer          test plan from BRD             │
+│  T6a  Security Engineer    STRIDE threat model            │
+│  T6b  Code Reviewer        conformance checklist          │
+│  T9a  SRE                  SLO definitions                │
+│                                                           │
+│  All agents launched. Working autonomously...             │
+└───────────────────────────────────────────────────────────┘
+```
+
+**When a wave completes**, print the checkmark cascade — the peak visual moment:
+```
+┌─ WAVE A COMPLETE ─────────────────────────── ⏱ {time} ─┐
+│                                                          │
+│  ✓ Software Engineer    {N} services, {M} endpoints      │
+│  ✓ Frontend Engineer    {N} page groups, {M} components  │
+│  ✓ DevOps               {N} Dockerfiles, 1 compose       │
+│  ✓ QA Engineer          test plan: {N} test cases        │
+│  ✓ Security Engineer    STRIDE: {N} threats identified   │
+│  ✓ Code Reviewer        checklist: {N} checkpoints       │
+│  ✓ SRE                  {N} SLOs, {M} alert rules        │
+│                                                          │
+│  {N}/{N} complete                                        │
+│  → Starting Wave B ({M} agents against written code)     │
+└──────────────────────────────────────────────────────────┘
+```
+
+Every agent completion line MUST include concrete numbers. No `✓ QA Engineer — complete`. The numbers prove the system did real work.
+
+### Transition Announcements
+
+Between phases and waves, print a concise `→` transition line:
+```
+  → Starting DEFINE phase
+  → Starting BUILD phase (Wave A: {N} agents)
+  → Wave A complete, starting Wave B ({N} agents against written code)
+  → HARDEN complete, {N} Critical findings → entering remediation
+  → All phases complete, presenting final summary
+```
 
 **Maximum parallelism mode (default):**
 
@@ -765,20 +928,37 @@ Every agent follows:
 ## Final Summary Template
 
 ```
-╔══════════════════════════════════════════════════════════════╗
-║          PRODUCTION GRADE v{local_version} — COMPLETE          ║
-╠══════════════════════════════════════════════════════════════╣
-║  Project: <name>                                             ║
-║                                                              ║
-║  DEFINE:  ✓ BRD (<X> stories) ✓ Architecture (<pattern>)     ║
-║  BUILD:   ✓ Backend (<N> services) ✓ Tests (<N> passing)     ║
-║  HARDEN:  ✓ Security (<N> fixed) ✓ Code Review (<N> fixed)   ║
-║  SHIP:    ✓ Docker ✓ CI/CD ✓ Terraform ✓ SRE approved       ║
-║  SUSTAIN: ✓ Docs ✓ Skills (<N> created) ✓ Learnings captured ║
-║                                                              ║
-║  Workspace: Claude-Production-Grade-Suite/                   ║
-║  Config: .production-grade.yaml                              ║
-╚══════════════════════════════════════════════════════════════╝
+╔══════════════════════════════════════════════════════════════════╗
+║                                                                  ║
+║   ◆  PRODUCTION GRADE v{local_version} — COMPLETE    ⏱ {total}  ║
+║   Project: {name}                                                ║
+║                                                                  ║
+╠══════════════════════════════════════════════════════════════════╣
+║                                                                  ║
+║   DEFINE    ✓ BRD ({N} stories, {M} criteria)                    ║
+║             ✓ Architecture ({pattern}, {N} services)             ║
+║                                                                  ║
+║   BUILD     ✓ Backend ({N} services, {M} endpoints, {K} lines)   ║
+║             ✓ Frontend ({N} page groups, {M} components)         ║
+║             ✓ Containers ({N} Dockerfiles, 1 compose)            ║
+║                                                                  ║
+║   HARDEN    ✓ Security ({N} findings → {M} Critical remaining)   ║
+║             ✓ QA ({N} tests, {M}% passing)                       ║
+║             ✓ Code Review ({N} findings → all resolved)          ║
+║                                                                  ║
+║   SHIP      ✓ Infrastructure (Terraform, {N} environments)       ║
+║             ✓ CI/CD ({provider}, {N} workflows)                  ║
+║             ✓ SRE ({N} SLOs, {M} alerts, {K} runbooks)          ║
+║                                                                  ║
+║   SUSTAIN   ✓ Documentation ({N} docs generated)                 ║
+║             ✓ Custom Skills ({N} project-specific)               ║
+║                                                                  ║
+╠══════════════════════════════════════════════════════════════════╣
+║                                                                  ║
+║   Agents: {N} used · Tasks: {M} completed · Errors: {K}         ║
+║   Files: {N} created · Tests: {M} passing · Vulnerabilities: {K}║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝
 ```
 
 ## Common Mistakes
@@ -799,3 +979,7 @@ Every agent follows:
 | Hardcoded paths | Read `.production-grade.yaml` for path overrides |
 | Sequential when parallel possible | Maximum parallelism: two-wave execution + internal skill agents. Every independent unit gets its own agent |
 | Duplicating security review | code-reviewer references security-engineer findings |
+| `✓ Analysis complete` without numbers | Every completion line MUST include concrete counts |
+| Skipping pipeline dashboard reprint | Dashboard reprints at every phase transition and gate |
+| Using emoji for status | Unicode symbols only (`● ○ ✓ ✗ ⧖`) — no emoji |
+| Missing wave announcements | Print Tier 2 box before and after every parallel wave |
