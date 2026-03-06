@@ -20,6 +20,34 @@
 
 ---
 
+## Contributing
+
+1. Fork the repo
+2. Create a branch: `git checkout -b feature/your-feature`
+3. Commit changes
+4. Open a Pull Request
+
+**Adding a skill:** Create `skills/your-skill-name/SKILL.md` with `---` frontmatter. For large skills, use the router + phases pattern.
+
+## Release Timeline
+
+```
+2026-03-06  v5.0  --- Verified & Resilient: receipts, re-anchoring, adversarial review
+2026-03-06  v4.4  --- Freshness protocol: agents verify volatile data before implementing
+2026-03-06  v4.3  --- Visual identity, pipeline dashboard, gate ceremonies
+2026-03-06  v4.2  --- Adaptive routing, 10 execution modes
+2026-03-05  v4.1  --- Engagement modes, scale-driven architecture
+2026-03-04  v4.0  --- Two-wave parallelism, internal skill agents
+2026-03-04  v3.3  --- Brownfield-safe: works on existing codebases
+2026-03-03  v3.2  --- Auto-update, MECE intent routing
+2026-03-02  v3.1  --- Polymath co-pilot (14th skill)
+2026-03-01  v3.0  --- Full rewrite: Teams/TaskList, shared protocols
+2026-02-28  v2.0  --- 13 bundled skills, unified workspace
+2026-02-24  v1.0  --- Initial release: DEFINE > BUILD > HARDEN > SHIP > SUSTAIN
+```
+
+---
+
 ## What It Does
 
 You describe what you want. 14 specialized agents handle requirements, architecture, backend, frontend, testing, security audit, code review, infrastructure, CI/CD, SRE, documentation, and custom skills — coordinated through a parallel pipeline with 3 approval gates.
@@ -236,36 +264,6 @@ Not anymore. Re-anchoring re-reads workspace artifacts from disk at every phase 
 
 **What if I'm not technical?**
 Every interaction is multiple choice. Polymath translates technical decisions to plain language at any gate.
-
----
-
-## Release Timeline
-
-```
-2026-03-06  v5.0  --- Verified & Resilient: receipts, re-anchoring, adversarial review
-2026-03-06  v4.4  --- Freshness protocol: agents verify volatile data before implementing
-2026-03-06  v4.3  --- Visual identity, pipeline dashboard, gate ceremonies
-2026-03-06  v4.2  --- Adaptive routing, 10 execution modes
-2026-03-05  v4.1  --- Engagement modes, scale-driven architecture
-2026-03-04  v4.0  --- Two-wave parallelism, internal skill agents
-2026-03-04  v3.3  --- Brownfield-safe: works on existing codebases
-2026-03-03  v3.2  --- Auto-update, MECE intent routing
-2026-03-02  v3.1  --- Polymath co-pilot (14th skill)
-2026-03-01  v3.0  --- Full rewrite: Teams/TaskList, shared protocols
-2026-02-28  v2.0  --- 13 bundled skills, unified workspace
-2026-02-24  v1.0  --- Initial release: DEFINE > BUILD > HARDEN > SHIP > SUSTAIN
-```
-
----
-
-## Contributing
-
-1. Fork the repo
-2. Create a branch: `git checkout -b feature/your-feature`
-3. Commit changes
-4. Open a Pull Request
-
-**Adding a skill:** Create `skills/your-skill-name/SKILL.md` with `---` frontmatter. For large skills, use the router + phases pattern.
 
 ---
 
