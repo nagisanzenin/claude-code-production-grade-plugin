@@ -24,7 +24,7 @@
 
 ## Built With This Plugin
 
-**Built something with this plugin? Email nagi_builds@gmail.com to get featured here.**
+**Built something with this plugin? Email nagi.builds@gmail.com to get featured here.**
 
 | Project | Live | Description |
 |---------|------|-------------|
