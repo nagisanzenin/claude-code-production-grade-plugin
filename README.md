@@ -27,7 +27,7 @@
 | Project | Live | Description |
 |---------|------|-------------|
 | **PingBase** | [pingbasez.vercel.app](https://pingbasez.vercel.app/) | Free uptime monitoring — get emailed when your website goes down. GitHub OAuth, Stripe billing, Turso DB. |
-| **LLM Matrix Arena** | [llm-matrix.vercel.app](https://llm-matrix.vercel.app/) | LLM gateway with smart routing — classifies prompt difficulty and routes to cost-optimal models. 7+ providers, one API key, 40-60% cost savings. |
+| **LLM Matrix Arena** | [llm-matrix.vercel.app](https://llm-matrix.vercel.app/) | Browse and compare LLM models across N dimensions. Community-driven voting from real developers — not benchmarks, real opinions. |
 
 ---
 
