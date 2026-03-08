@@ -6,6 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/nagisanzenin/claude-code-production-grade-plugin"><img src="https://img.shields.io/github/stars/nagisanzenin/claude-code-production-grade-plugin?style=social" alt="GitHub stars"></a>
+  <a href="https://discord.gg/3ux2c5xz"><img src="https://img.shields.io/badge/Discord-Join%20Community-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License">
   <img src="https://img.shields.io/badge/version-5.4.0-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/agents-14-green.svg" alt="14 agents">
@@ -381,6 +382,14 @@ Works on existing codebases — brownfield detection auto-maps your project stru
 4. Open a Pull Request
 
 **Adding a skill:** Create `skills/your-skill-name/SKILL.md` with `---` frontmatter.
+
+---
+
+## Community
+
+Join the Discord to share what you've built, discuss workflows, report bugs, and request features.
+
+<a href="https://discord.gg/3ux2c5xz"><img src="https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Join Discord"></a>
 
 ---
 
