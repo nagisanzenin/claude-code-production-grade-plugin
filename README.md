@@ -30,6 +30,7 @@
 |---------|------|-------------|
 | **PingBase** | [pingbasez.vercel.app](https://pingbasez.vercel.app/) | Free uptime monitoring — get emailed when your website goes down. GitHub OAuth, Stripe billing, Turso DB. |
 | **LLM Matrix Arena** | [llm-matrix.vercel.app](https://llm-matrix.vercel.app/) | Browse and compare LLM models across N dimensions. Community-driven voting from real developers — not benchmarks, real opinions. |
+| **SkyClaw** | [github.com/nagisanzenin/skyclaw](https://github.com/nagisanzenin/skyclaw) | Cloud-native Rust AI agent runtime. Telegram-native — deploy one binary, paste your API key, and control your server through chat. |
 
 ---
 
