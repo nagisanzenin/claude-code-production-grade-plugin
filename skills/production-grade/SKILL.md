@@ -380,7 +380,7 @@ mkdir -p Claude-Production-Grade-Suite/.orchestrator/receipts/
 |---------------|---------|
 | `ux-protocol.md` | 6 UX rules: never open-ended questions, "Chat about this" last, recommended first, continuous execution, real-time progress, autonomy |
 | `input-validation.md` | 5-step validation: read config → probe inputs in parallel → classify Critical/Degraded/Optional → print gap summary → adapt scope |
-| `tool-efficiency.md` | Parallel tool calls, smart_outline before Read, Glob not find, Grep not grep, config-aware paths |
+| `tool-efficiency.md` | Parallel tool calls, Glob before Read, Grep not grep, config-aware paths |
 | `conflict-resolution.md` | Authority hierarchy, dedup by file:line (keep highest severity), HARDEN→BUILD feedback loops (2 cycle max) |
 | `visual-identity.md` | Visual design language: container hierarchy (Tier 1/2/3), icon vocabulary, progress patterns, gate ceremonies, wave announcements, completion summaries, timing |
 | `freshness-protocol.md` | Temporal sensitivity: volatility tiers (Critical/High/Medium/Stable), WebSearch triggers for outdated data (model IDs, versions, pricing, CVEs), search-then-implement pattern |
