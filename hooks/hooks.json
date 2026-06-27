@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "_R=\"${CLAUDE_PLUGIN_ROOT}\"; [ -z \"$_R\" ] && _R=\"$HOME/.claude/plugins/cache/nagisanzenin/production-grade\"; bash \"$_R/hooks/session-guard.sh\"",
+            "command": "_R=\"${CLAUDE_PLUGIN_ROOT}\"; [ -z \"$_R\" ] && _R=$(python3 -c \"import json,os; p=os.path.expanduser('~/.claude/plugins/installed_plugins.json'); d=json.load(open(p)) if os.path.exists(p) else []; print(next((x.get('installPath','') for x in (d if isinstance(d,list) else list(d.values())) if 'nagisanzenin/production-grade' in str(x.get('name',''))),'')); \" 2>/dev/null); [ -z \"$_R\" ] && _R=\"$HOME/.claude/plugins/cache/nagisanzenin/production-grade\"; bash \"$_R/hooks/session-guard.sh\"",
             "timeout": 10
           }
         ]
