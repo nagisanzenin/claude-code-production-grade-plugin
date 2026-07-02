@@ -2,6 +2,20 @@
 
 All notable changes to the Production Grade Plugin.
 
+## [5.5.1] — 2026-07-02 — Loop Engine hardening
+
+Hardening from an empirical shakedown of 5.5.0 (a real SaaS was built through the pipeline and the hook was instrumented). All changes are additive and backward compatible.
+
+### Fixed
+- **"Done" is now trustworthy (BUILD-exit gate).** BUILD cannot complete until `oracle-full.sh` passes a **deep boot smoke that exercises real endpoints/flows**, not just `/health`. The shakedown shipped an app that compiled, unit-tested green, and 500'd on every real endpoint because the smoke only hit `/health`; the deep smoke now catches that at BUILD-exit. Functional Drive is an explicit HARDEN gate — no Dead Element may remain open.
+- **oracle-gate hook: scoped, worktree-safe, non-thrashing.** It now (a) resolves the workspace by walking up from the *edited file* (worktree/subdir safe) instead of trusting `CLAUDE_PROJECT_DIR`; (b) skips non-source edits so a README edit no longer triggers a full typecheck; (c) "arms after first green" so greenfield scaffolding is not blocked before anything compiles; (d) scopes the failure message to the triggering edit; (e) passes the edited file to `oracle.sh` for incremental checks. 11/11 unit tests.
+- **Enforcement self-test.** Oracle Bootstrap makes a deliberately-broken canary edit and confirms the gate fired — so the pipeline *knows* whether hook enforcement is live (it rides on undocumented subagent-hook behavior) instead of assuming.
+
+### Changed
+- **Stack-agnostic + brownfield-first.** Oracle Bootstrap adopts the project's existing toolchain (`package.json`/`Makefile`/`pyproject` scripts) rather than imposing new tools, and records each check as PRESENT or UNAVAILABLE. A missing tool (no Docker/runtime/offline) is reported as UNVERIFIED, never as a pass.
+- **Loop-protocol honesty:** baseline-relative ratchet (a real fix may transiently *raise* the failure count — progress, not regression); impl-side gaming named (teaching-to-the-test, not only weakening tests); explicit un-provisionable-oracle branch.
+- Bootstrap resets gate state (`oracle.armed`/`oracle.off`) per run; worktrees get the oracle scripts copied in.
+
 ## [5.5.0] — 2026-07-02 — The Loop Engine
 
 Iteration becomes the main path, not the exception path. Governing idea: **a task can be agentically closed iff it has an executable oracle** — so v5.5 manufactures oracles and wires convergence loops around them. Design rationale in `docs/LOOPS.md`.

@@ -94,13 +94,17 @@ Worktrees: [enabled|disabled]
 Write two executable scripts to the workspace, tailored to this project's stack (detected in Pre-Flight / codebase discovery):
 
 1. `Claude-Production-Grade-Suite/.orchestrator/oracle.sh` — the **fast oracle**: typecheck + lint only. Hard target: **under 15 seconds** (the oracle-gate hook runs it after every file edit and times out at 20s). Incremental/changed-file flags where the toolchain supports them. Brownfield: wire to the project's existing commands (`npm run typecheck`, `ruff check`, `go vet`, ...) — never introduce new tools when equivalents exist.
-2. `Claude-Production-Grade-Suite/.orchestrator/oracle-full.sh` — the **full oracle**: test suite + build + boot smoke (compose up, health endpoint, compose down). Run at loop exits, wave merges, and phase transitions — not per edit.
+2. `Claude-Production-Grade-Suite/.orchestrator/oracle-full.sh` — the **full oracle**: test suite + build + **deep boot smoke**. The smoke MUST exercise real endpoints/flows (create then read a resource; hit an authed route), **not just `/health`** — a health-only smoke passes an app whose every feature 500s (this exact failure was observed in the v5.5 shakedown: unit tests green, `/health` green, every real endpoint broken). Run at loop exits, wave merges, and phase transitions — not per edit.
 
 Then:
 - `chmod +x` both. **Execute both once** to prove they run (fast oracle may be red in greenfield — that is fine; it must *run*, not pass).
 - If the fast oracle cannot get under 15s, move the slow part to `oracle-full.sh` and keep `oracle.sh` minimal. Never ship a fast oracle that times out — a timed-out gate is a silent gate.
 - Escape hatch: touching `.orchestrator/oracle.off` disables the edit-gate temporarily (use during mass scaffolding bursts; DELETE it before the wave completes — a wave may not finish with the gate off).
 - Write the **oracle inventory** receipt `T0-oracle-bootstrap.json`: every executable check now available (fast oracle, full oracle, per-service test commands, e2e driver if present), plus `metrics.fast_oracle_seconds`.
+- **Reset gate state:** `rm -f .orchestrator/oracle.armed .orchestrator/oracle.off` so a previous run's state does not leak in. The edit-gate stays non-blocking until the tree first goes green ("arm after first green") — greenfield scaffolding does not thrash.
+- **Stack-agnostic + degrade honestly:** detect the project's REAL toolchain and wire the oracle to it. Brownfield: reuse the repo's existing `package.json`/`Makefile`/`pyproject`/`go.mod` scripts and their config — never impose new tools on someone's codebase. If a checker, test runner, or Docker is unavailable, the oracle runs what it can and the bootstrap receipt records each check as PRESENT or UNAVAILABLE. A missing tool must NEVER masquerade as a passing check (loop-protocol Rule 1: an oracle you can't run is not an oracle).
+- **Worktree safety:** if worktrees are enabled, copy `oracle.sh`, `oracle-full.sh`, and the `.orchestrator/` gate dir into each worktree — the workspace is gitignored, so it is absent there otherwise, and the edit-gate would silently no-op. Per-edit gating resolves the oracle by walking up from the edited file; the post-merge integration loop is the backstop.
+- **Enforcement self-test (do NOT skip):** after writing `oracle.sh`, make ONE deliberately-broken edit to a scratch source file with the Edit tool and confirm you receive the oracle-gate failure. If you do not, the edit-gate is not enforcing in this environment (it rides on hook behavior that is not contractually guaranteed) — log it in the bootstrap receipt and fall back to running `oracle.sh` explicitly after each edit instead of assuming the hook fires.
 
 ```
   ✓ Oracle Bootstrap    oracle.sh 6s (tsc --incremental + eslint) · oracle-full.sh 74s (jest + build + boot)
@@ -223,13 +227,10 @@ After merging, all agent outputs are unified in the working directory.
 When all BUILD tasks complete:
 1. **Merge worktree branches** (if worktrees enabled) — see Worktree Merge-Back above, including the post-merge integration loop.
 2. **Verify receipts:** Read all BUILD receipts from `.orchestrator/receipts/` (T3a, T3b, T4). Verify all listed artifacts exist on disk. Surface any receipt whose `loops` array has an exit of `plateau|oscillation|budget`.
-3. **Re-anchor:** Re-read from disk before transitioning to HARDEN:
-   - Directory listing of `services/`, `frontend/`, `libs/shared/` (what was actually built)
-   - `Claude-Production-Grade-Suite/solution-architect/system-design.md` (architecture reference for HARDEN agents)
-3. Verify all services compile and start
-4. Verify docker-compose brings up the full stack
-5. Log BUILD completion to workspace
-6. Read `phases/harden.md` and begin HARDEN phase — use freshly-read data for agent prompts
+3. **BUILD-exit gate (loop-protocol Rule 1) — the build may NOT leave BUILD until this passes:** run `.orchestrator/oracle-full.sh` and require BOTH (a) the test suite green and (b) the **deep boot smoke** green — the app boots AND its core endpoints/flows respond correctly (create→read a resource; an authed route), not merely `/health`. "Compiles" and "unit tests pass" are explicitly NOT sufficient: the v5.5 shakedown shipped an app that compiled, unit-tested green, and 500'd on every real endpoint. If the smoke is red → remediation loop (ratchet = failing checks; escalate per Rule 6 on plateau). If the app genuinely cannot boot here (missing Docker/runtime) → record it in the receipt as UNVERIFIED and flag it at the next gate; never pass BUILD by assuming.
+4. **Re-anchor:** Re-read from disk before HARDEN — directory listing of `services/`, `frontend/`, `libs/shared/` (what was actually built) and `solution-architect/system-design.md`.
+5. Log BUILD completion (including the boot-smoke result) to the workspace.
+6. Read `phases/harden.md` and begin HARDEN phase — use freshly-read data for agent prompts.
 
 ## Failure Handling
 

@@ -116,14 +116,14 @@ for branch in harden_worktree_branches:
 
 ## Functional Drive — Execute the Dead Element Rule (Loop Protocol Rule 7)
 
-After the three HARDEN agents complete (and worktree merge-back), dispatch the Functional Drive loop. This is the step that replaces human hand-testing: the Dead Element Rule gets EXECUTED against the running app, not reviewed in source.
+After the three HARDEN agents complete (and worktree merge-back), dispatch the Functional Drive loop. **This is a GATE, not a report — HARDEN does not complete while any Dead Element (Critical) is open.** It replaces human hand-testing: the Dead Element Rule gets EXECUTED against the running app, not reviewed in source. (BUILD already ran a deep boot smoke as its exit gate; this is the exhaustive drive of every control.)
 
 ```python
 Agent(
   prompt="""You are the Functional Drive agent (loop-protocol Rule 7).
 Boot the app via .orchestrator/oracle-full.sh boot smoke (or docker-compose up) and DRIVE it as a user:
-- Browser path (preferred): if a Playwright/browser MCP tool is available (check via ToolSearch), open every page from the navigation graph; CLICK every button, SUBMIT every form (valid + one invalid case), FOLLOW every link.
-- Fallback path (no browser tooling): exercise every API endpoint per the OpenAPI spec with real HTTP calls (auth included), and statically walk frontend handlers to flag any element with no wired action. Record in your receipt that drive was API-level only.
+- Browser path (preferred): if a Playwright/browser MCP tool or a headless browser (`google-chrome --headless`, `chromium`) is available (check via ToolSearch / PATH), open every page from the navigation graph; CLICK every button, SUBMIT every form (valid + one invalid case), FOLLOW every link.
+- Fallback path (no browser tooling): exercise every API endpoint per the OpenAPI spec with real HTTP calls (auth included), AND fetch each rendered page and assert every control resolves to a wired action (form `action` returns non-404; button/link has a handler/href). This is weaker than a real click — many client-side dead elements are invisible to it — so record in the receipt that the drive was API+static only and flag the coverage gap. Never report a clean drive you could not actually perform.
 Oracle: every interactive element produces its intended effect (navigation lands, form persists + feedback renders, buttons act). Any element that renders but does nothing = CRITICAL finding (Dead Element Rule).
 Loop: fix-worthy findings go to remediation; re-drive affected flows after fixes until 0 Critical or plateau (Rule 3). Scope by engagement mode (Rule 10): Express = critical flows smoke; Standard+ = full drive.
 Write findings to Claude-Production-Grade-Suite/qa-engineer/functional-drive.md, loop log to .orchestrator/loops/, receipt to .orchestrator/receipts/T5c-functional-drive.json with metrics (elements_driven, dead_elements, flows_passed) and loops.""",

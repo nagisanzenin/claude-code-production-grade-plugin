@@ -18,6 +18,8 @@ Every loop exits on an oracle. Prefer the highest tier available:
 
 If no Tier 1-2 oracle exists for a task, your FIRST move is to build one (write the failing test, the repro script, the contract check) — or escalate. Iterating on self-judgment is forbidden.
 
+An oracle you cannot EXECUTE (missing checker, no runtime, no Docker, offline) is not green — it is **UNVERIFIED**. Record it as unverified and escalate; never treat "could not run the check" as "the check passed."
+
 ## Rule 2: The Loop Contract
 
 Before opening any loop, state its contract (in your working notes or the loop ledger):
@@ -37,7 +39,7 @@ loop:
 
 | Guard | Rule |
 |-------|------|
-| **Ratchet** | Track the metric each iteration. Any regression → revert the iteration (worktree/git checkpoint) and try differently. |
+| **Ratchet** | Track the metric against a BASELINE snapshot, not the previous iteration. A real fix can transiently *raise* the count (fixing an import error reveals 10 genuine test failures that were hidden behind it) — that is progress, not regression. Regression = worse than baseline once the change settles; on a true regression, revert the iteration (worktree/git checkpoint) and try differently. |
 | **Plateau** | No ratchet improvement for 2 consecutive iterations → stop, escalate. Do not polish forever. |
 | **Oscillation** | Same failure signature reappears after being fixed → you are cycling (fix X breaks Y, fix Y breaks X). Stop, escalate one altitude up. |
 | **Hard cap** | Absolute iteration caps are backstops, not targets. Exit on convergence or plateau first. Defaults: inner loops 5, review loops 3, remediation 3. |
@@ -50,6 +52,7 @@ The producer inside a loop MUST NOT modify the oracle it is looping against.
 - **Unit tests co-located with a producer's own code** are written by that producer as part of red-green TDD. Once green they join the ratchet: weakening a green test to admit a later change is not a fix — it goes through the review loop like any oracle change.
 - If an oracle check is genuinely wrong, the producer STOPS and reports it; only the owner may change it, and every oracle change gets a diff review answering one question: "does this weaken the oracle?"
 - Same for lint configs, type configs, thresholds: making the check pass by making the check weaker is a Critical violation, not a fix.
+- **Impl-side gaming (the other direction):** satisfying an oracle by faking the implementation — hardcoding a test's expected output, special-casing the asserted input, stubbing a function to return the fixture — passes the check without the behavior. It is as much a violation as weakening the test. Defend with property/metamorphic tests and held-out acceptance checks the producer does not see, and task the adversarial reviewer to hunt code that is overfit to the tests.
 
 ## Rule 5: Delta-Only Feedback
 

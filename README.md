@@ -8,7 +8,7 @@
   <a href="https://github.com/nagisanzenin/claude-code-production-grade-plugin"><img src="https://img.shields.io/github/stars/nagisanzenin/claude-code-production-grade-plugin?style=social" alt="GitHub stars"></a>
   <a href="https://discord.gg/3ux2c5xz"><img src="https://img.shields.io/badge/Discord-Join%20Community-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License">
-  <img src="https://img.shields.io/badge/version-5.5.0-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/version-5.5.1-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/agents-14-green.svg" alt="14 agents">
   <img src="https://img.shields.io/badge/protocols-9-red.svg" alt="9 protocols">
   <img src="https://img.shields.io/badge/execution%20modes-10-purple.svg" alt="10 modes">
