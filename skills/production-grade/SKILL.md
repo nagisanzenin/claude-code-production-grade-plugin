@@ -126,7 +126,7 @@ For non-Full-Build modes, use the lightweight execution flows below. For Full Bu
 
 All modes share these behaviors:
 - Bootstrap workspace: `mkdir -p Claude-Production-Grade-Suite/.protocols/ Claude-Production-Grade-Suite/.orchestrator/`
-- Write shared protocols (same as Full Build step 3, including `visual-identity.md`, `freshness-protocol.md`, `receipt-protocol.md`, and `boundary-safety.md`)
+- Write shared protocols (same as Full Build step 3, including `visual-identity.md`, `freshness-protocol.md`, `receipt-protocol.md`, `boundary-safety.md`, and `loop-protocol.md`)
 - Read `.production-grade.yaml` for path overrides
 - Read existing workspace state if present
 - Engagement mode + parallelism: ask ONLY if mode involves 3+ skills. For 1-2 skill modes, use Standard engagement + Sequential execution (overhead of asking isn't worth it).
@@ -386,6 +386,7 @@ mkdir -p Claude-Production-Grade-Suite/.orchestrator/receipts/
 | `freshness-protocol.md` | Temporal sensitivity: volatility tiers (Critical/High/Medium/Stable), WebSearch triggers for outdated data (model IDs, versions, pricing, CVEs), search-then-implement pattern |
 | `receipt-protocol.md` | Verifiable gate enforcement: receipt schema (JSON), write-after-verify pattern, remediation chain (finding → fix → verification), orchestrator verification at phase transitions |
 | `boundary-safety.md` | 6 structural patterns for system boundary safety: framework abstraction limits, control flow delegation, self-referencing config detection, conditional global interceptors, cross-boundary journey testing, identity consistency across integrations |
+| `loop-protocol.md` | Oracle-driven iteration: no oracle no loop, oracle hierarchy (executable > adversarial > self-check), loop contract, convergence guards (ratchet/plateau/oscillation), oracle immutability + test ownership, delta-only feedback, escalation ladder, premade loops, JIT composer rule, loop ledger, engagement-mode loop budgets |
 
 Read these from the plugin's `skills/_shared/protocols/` directory and copy them. If plugin path is unavailable, write from the summaries above.
 
@@ -940,11 +941,21 @@ Follow the shared protocol at `Claude-Production-Grade-Suite/.protocols/conflict
 
 ### Remediation Feedback Loop
 
-When HARDEN skills find Critical/High issues:
-1. Orchestrator creates T8 (Remediation) task with findings
-2. Remediation agent fixes code in `services/`, `frontend/`
-3. Re-scan affected files after fixes
-4. If still failing after **2 cycles** → escalate to user via AskUserQuestion
+When HARDEN skills find Critical/High issues, run a convergence loop (loop-protocol Rules 2-3), not a fixed pass:
+1. Orchestrator creates T8 (Remediation) task with findings. Contract: oracle = original finding agents re-scan (verification receipts); ratchet = open Critical/High count; delta = the findings list only.
+2. Remediation agent fixes code in `services/`, `frontend/` — it may NOT touch `tests/` or weaken any check (Rule 4).
+3. Original finding agents re-scan affected files (never the fixer verifying itself).
+4. Exit on: **0 Critical/High** (converged) · **plateau** (2 cycles without the count falling) · **oscillation** (a fixed finding reopens). Hard cap 3 cycles as backstop. On any non-converged exit → escalate to user via AskUserQuestion with the ratchet trajectory (e.g. `7→3→3`), what was tried, and remaining findings. Log every cycle to `.orchestrator/loops/`.
+
+### Loop Composer — JIT Loops (loop-protocol Rule 8)
+
+When execution hits a situation no premade loop covers (a heisenbug, a flaky integration, a perf cliff, an env-specific failure), the orchestrator — or any agent — may compose a loop on the spot. Discipline:
+
+1. **State the contract first** (Rule 2: goal, producer, oracle, delta, ratchet, budget, exit) and register it at `.orchestrator/loops/{loop-id}.md`. No contract → no loop.
+2. **No oracle, no loop.** If no Tier 1-2 oracle exists, the FIRST iteration builds one — a failing repro script IS an oracle. Cannot build one → escalate, do not wander.
+3. **No new physics.** JIT loops obey every guard (Rules 3-6) and every budget (Rule 10). Creativity goes into WHERE to loop, never into whether the guards apply.
+4. **Prefer fresh agents per iteration** with delta-only context (failing output + disk artifacts) — re-anchoring per iteration beats an anchored context that repeats its own mistake.
+5. Surface every JIT loop in the phase completion box: `↻ debug:webhook-retry 3 iters, converged`.
 
 ## Context Bridging
 
@@ -1013,10 +1024,11 @@ Security runs during ALL phases:
 
 Every agent follows:
 1. **Build and verify** — after writing code, run it. After writing tests, execute them.
-2. **Validation loop** — `while not valid: fix(errors); validate()`
-3. **Self-debug** — read errors, identify root cause. After 3 failures: stop and report.
+2. **Validation loop** — `while not valid: fix(errors); validate()` — governed by loop-protocol: named oracle, ratchet, plateau/oscillation guards, ledger entry.
+3. **Self-debug** — read errors, identify root cause. Escalate strategy, not effort (Rule 6): plateau → fresh approach → altitude up → user. 3 attempts is the backstop, convergence is the goal.
 4. **Quality bar** — no TODOs, no stubs. All code compiles. All tests pass.
-5. **TDD enforced** — write test first, watch fail, implement, watch pass, refactor.
+5. **TDD enforced** — write test first, watch fail, implement, watch pass, refactor. Never weaken an oracle to pass it (Rule 4) — `tests/` belongs to QA.
+6. **Oracle discipline** — keep `.orchestrator/oracle.sh` green after every edit (the oracle-gate hook enforces this); run `oracle-full.sh` before claiming any unit done.
 
 ## Partial Execution
 
@@ -1149,3 +1161,8 @@ This shuts down all agents and frees resources. Do NOT leave agents idle — the
 | Stopping pipeline on gate rejection | Gates are self-healing. On rejection, loop back to the relevant agent for rework (max 2 cycles), re-verify, re-present. Only stop if user explicitly cancels or rework limit reached. |
 | Not tracking rework cycles | Log every rework cycle to `.orchestrator/rework-log.md` with gate number, concerns, and changes. Rework count appears in gate ceremony header and final summary. |
 | Missing effort tracking in receipts | Every receipt must include an `effort` field with files_read, files_written, tool_calls. These aggregate into the cost dashboard in the final summary. |
+| Looping without an oracle | No oracle, no loop (loop-protocol Rule 1). Name the executable exit check before iterating; if none exists, build one (failing repro) or escalate. |
+| Treating iteration caps as targets | Caps are backstops. Loops exit on convergence, plateau (2 no-progress rounds), or oscillation — and the ratchet trajectory goes in the receipt. |
+| Producer modifying its own oracle | Engineers never touch `tests/`; fixers never weaken checks; verification is done by the ORIGINAL finding agent, never the fixer (Rule 4). |
+| Skipping the BUILD Oracle Bootstrap | Without `.orchestrator/oracle.sh` + `oracle-full.sh`, no downstream loop has anything to execute and the oracle-gate hook is inert. Bootstrap is a foundation step, like `libs/shared/`. |
+| Silently swallowing a non-converged loop | Any `loops` exit of `plateau\|oscillation\|budget` in a receipt is surfaced at the next gate. Non-convergence is information. |

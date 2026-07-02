@@ -8,9 +8,9 @@
   <a href="https://github.com/nagisanzenin/claude-code-production-grade-plugin"><img src="https://img.shields.io/github/stars/nagisanzenin/claude-code-production-grade-plugin?style=social" alt="GitHub stars"></a>
   <a href="https://discord.gg/3ux2c5xz"><img src="https://img.shields.io/badge/Discord-Join%20Community-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="MIT License">
-  <img src="https://img.shields.io/badge/version-5.4.1-blue.svg" alt="Version">
+  <img src="https://img.shields.io/badge/version-5.5.0-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/agents-14-green.svg" alt="14 agents">
-  <img src="https://img.shields.io/badge/protocols-8-red.svg" alt="7 protocols">
+  <img src="https://img.shields.io/badge/protocols-9-red.svg" alt="9 protocols">
   <img src="https://img.shields.io/badge/execution%20modes-10-purple.svg" alt="10 modes">
 </p>
 
@@ -264,10 +264,12 @@ Not just full builds. The orchestrator reads your request and routes automatical
 
 ## Protocol Stack
 
-All 14 agents load the same 8 protocols at startup:
+All 14 agents load the same 9 protocols at startup:
 
 ```
   ┌──────────────────────────────────────────────┐
+  │          Loop Protocol                        │  ← oracle-driven iteration
+  ├──────────────────────────────────────────────┤
   │          Boundary Safety                      │  ← system boundary patterns
   ├──────────────────────────────────────────────┤
   │          Receipt Protocol                     │  ← proof of completion
@@ -412,5 +414,5 @@ MIT
 ---
 
 <p align="center">
-  <strong>14 agents. 8 protocols. 10 modes. One install.</strong>
+  <strong>14 agents. 9 protocols. 10 modes. One install.</strong>
 </p>

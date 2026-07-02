@@ -87,6 +87,27 @@ Store the worktree decision in `Claude-Production-Grade-Suite/.orchestrator/sett
 Worktrees: [enabled|disabled]
 ```
 
+## Oracle Bootstrap — Foundation Before Waves (Loop Protocol)
+
+**Sequential, BEFORE launching any parallel agent.** Same rule as `libs/shared/`: shared foundations before parallel execution. Without this step, no downstream loop has anything to execute (loop-protocol Rule 1: no oracle, no loop).
+
+Write two executable scripts to the workspace, tailored to this project's stack (detected in Pre-Flight / codebase discovery):
+
+1. `Claude-Production-Grade-Suite/.orchestrator/oracle.sh` — the **fast oracle**: typecheck + lint only. Hard target: **under 15 seconds** (the oracle-gate hook runs it after every file edit and times out at 20s). Incremental/changed-file flags where the toolchain supports them. Brownfield: wire to the project's existing commands (`npm run typecheck`, `ruff check`, `go vet`, ...) — never introduce new tools when equivalents exist.
+2. `Claude-Production-Grade-Suite/.orchestrator/oracle-full.sh` — the **full oracle**: test suite + build + boot smoke (compose up, health endpoint, compose down). Run at loop exits, wave merges, and phase transitions — not per edit.
+
+Then:
+- `chmod +x` both. **Execute both once** to prove they run (fast oracle may be red in greenfield — that is fine; it must *run*, not pass).
+- If the fast oracle cannot get under 15s, move the slow part to `oracle-full.sh` and keep `oracle.sh` minimal. Never ship a fast oracle that times out — a timed-out gate is a silent gate.
+- Escape hatch: touching `.orchestrator/oracle.off` disables the edit-gate temporarily (use during mass scaffolding bursts; DELETE it before the wave completes — a wave may not finish with the gate off).
+- Write the **oracle inventory** receipt `T0-oracle-bootstrap.json`: every executable check now available (fast oracle, full oracle, per-service test commands, e2e driver if present), plus `metrics.fast_oracle_seconds`.
+
+```
+  ✓ Oracle Bootstrap    oracle.sh 6s (tsc --incremental + eslint) · oracle-full.sh 74s (jest + build + boot)
+```
+
+**TDD pair kickoff (loop-protocol Rule 7):** as part of Wave A, QA's test-plan task ALSO produces failing acceptance-test scaffolds under `tests/` for the top BRD criteria — executable and red. These are the oracle of record engineers build against. Engineers never modify anything under `tests/`.
+
 ## PARALLEL #1: T3a + T3b
 
 Spawn backend and frontend agents simultaneously as background Agents.
@@ -104,7 +125,12 @@ Read .production-grade.yaml for paths and preferences.
 Write services to project root: services/, libs/shared/
 Write workspace artifacts to: Claude-Production-Grade-Suite/software-engineer/
 TDD enforced: write test → watch fail → implement → watch pass → refactor.
-When complete, write a receipt JSON to Claude-Production-Grade-Suite/.orchestrator/receipts/T3a-software-engineer.json with task, agent, phase, status, artifacts, metrics, effort, verification. Then mark your task as completed.""",
+LOOP PROTOCOL (Claude-Production-Grade-Suite/.protocols/loop-protocol.md):
+- Inner loop per unit: after edits, run .orchestrator/oracle.sh (fast) — keep it green; run your unit tests red→green.
+- Oracle immutability: NEVER edit/skip/weaken anything under tests/ (QA-owned). If an acceptance test looks wrong, STOP and report it in your receipt.
+- Exit each unit only when: fast oracle green + your unit tests green + relevant tests/ scaffolds passing.
+- Log loops to .orchestrator/loops/ and include the loops array in your receipt (iterations, ratchet, exit).
+When complete, write a receipt JSON to Claude-Production-Grade-Suite/.orchestrator/receipts/T3a-software-engineer.json with task, agent, phase, status, artifacts, metrics, effort, verification, loops. Then mark your task as completed.""",
   subagent_type="general-purpose",
   mode="bypassPermissions",
   run_in_background=True,
@@ -132,7 +158,12 @@ Use the Skill tool to invoke 'production-grade:frontend-engineer'. This loads yo
 
 Write frontend to project root: frontend/
 Write workspace artifacts to: Claude-Production-Grade-Suite/frontend-engineer/
-When complete, write a receipt JSON to Claude-Production-Grade-Suite/.orchestrator/receipts/T3b-frontend-engineer.json with task, agent, phase, status, artifacts, metrics, effort, verification. Then mark your task as completed.""",
+LOOP PROTOCOL (Claude-Production-Grade-Suite/.protocols/loop-protocol.md):
+- Inner loop per component/page: after edits, run .orchestrator/oracle.sh (fast) — keep it green.
+- Oracle immutability: NEVER edit/skip/weaken anything under tests/ (QA-owned).
+- Phase 4b (Functional Verification) is a loop, not a pass: fix → re-verify until 0 dead elements or plateau (then escalate per Rule 6).
+- Log loops to .orchestrator/loops/ and include the loops array in your receipt.
+When complete, write a receipt JSON to Claude-Production-Grade-Suite/.orchestrator/receipts/T3b-frontend-engineer.json with task, agent, phase, status, artifacts, metrics, effort, verification, loops. Then mark your task as completed.""",
   subagent_type="general-purpose",
   mode="bypassPermissions",
   run_in_background=True,
@@ -185,11 +216,13 @@ for branch in worktree_branches:
 
 After merging, all agent outputs are unified in the working directory.
 
+**Integration loop (loop-protocol Rule 7) — run immediately after every merge-back:** execute `.orchestrator/oracle-full.sh` against the merged tree. Agents that were green in isolated worktrees can be red together — this is where cross-agent seam defects (mismatched contracts, duplicate handlers, broken imports) surface. If red: open a remediation loop (ratchet = failing checks; delta = failing output only; escalate per Rule 6 on plateau/oscillation). Do NOT proceed to the next wave on a red merge. Log the loop to `.orchestrator/loops/`.
+
 ## Completion
 
 When all BUILD tasks complete:
-1. **Merge worktree branches** (if worktrees enabled) — see Worktree Merge-Back above.
-2. **Verify receipts:** Read all BUILD receipts from `.orchestrator/receipts/` (T3a, T3b, T4). Verify all listed artifacts exist on disk.
+1. **Merge worktree branches** (if worktrees enabled) — see Worktree Merge-Back above, including the post-merge integration loop.
+2. **Verify receipts:** Read all BUILD receipts from `.orchestrator/receipts/` (T3a, T3b, T4). Verify all listed artifacts exist on disk. Surface any receipt whose `loops` array has an exit of `plateau|oscillation|budget`.
 3. **Re-anchor:** Re-read from disk before transitioning to HARDEN:
    - Directory listing of `services/`, `frontend/`, `libs/shared/` (what was actually built)
    - `Claude-Production-Grade-Suite/solution-architect/system-design.md` (architecture reference for HARDEN agents)
@@ -200,6 +233,8 @@ When all BUILD tasks complete:
 
 ## Failure Handling
 
-- Build failure after 3 retries → escalate to user via AskUserQuestion
+Follow the loop-protocol escalation ladder (Rule 6) — escalate STRATEGY, not effort:
+- Agent self-debug loop: delta-only feedback, ratchet on the error count, plateau after 2 no-progress rounds (hard cap 3 attempts).
+- On plateau/oscillation → fresh agent with a different stated approach → re-plan one altitude up → only then escalate to user via AskUserQuestion (include: what was tried, oracle output, ratchet trajectory).
 - Frontend fails but backend succeeds → continue backend-only pipeline
-- Agents self-debug: read errors, fix, retry before escalating
+- Never mark a wave complete with `.orchestrator/oracle.off` present or a red integration loop.

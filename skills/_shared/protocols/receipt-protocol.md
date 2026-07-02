@@ -34,6 +34,9 @@ Every agent writes a JSON receipt as its LAST action before `TaskUpdate(status="
     "files_written": 6,
     "tool_calls": 83
   },
+  "loops": [
+    { "id": "t6b-review-round", "iterations": 2, "ratchet": "critical 3→1→0", "exit": "converged" }
+  ],
   "verification": "all 4 review phases executed, review-report.md written with executive summary"
 }
 ```
@@ -50,6 +53,7 @@ Every agent writes a JSON receipt as its LAST action before `TaskUpdate(status="
 | `metrics` | object | Key-value pairs with concrete numbers. At least one metric required. No empty objects. |
 | `effort` | object | Tracking: `files_read` (int), `files_written` (int), `tool_calls` (int). Count your actual tool invocations during this task. |
 | `verification` | string | One-line summary of what the agent checked to confirm its work is correct. |
+| `loops` | object[] | One entry per loop run (loop-protocol Rule 9): `id`, `iterations` (int), `ratchet` (trajectory string), `exit` (`converged\|plateau\|oscillation\|budget`). Required whenever the task iterated; `[]` only for genuinely single-pass tasks. Any non-`converged` exit is surfaced at the next gate. |
 
 ---
 
@@ -123,3 +127,5 @@ At every phase transition and before every gate, the orchestrator:
 | Skipping receipt because "it's a small task" | Every task gets a receipt, regardless of size |
 | Writing receipt but not checking artifacts exist | Verify each artifact path before writing receipt |
 | `"effort": {}` or missing effort field | Count files_read, files_written, tool_calls from your actual work |
+| Iterated work with no `loops` entry | Every loop is registered: contract in `.orchestrator/loops/`, summary in the receipt. Unregistered loops are invisible cost. |
+| Reporting a `plateau`/`budget` exit as success | Non-convergence is information. State it in the receipt; the orchestrator surfaces it at the gate. |
