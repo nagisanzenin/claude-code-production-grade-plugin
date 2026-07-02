@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "_R=\"${CLAUDE_PLUGIN_ROOT}\"; [ -z \"$_R\" ] && _R=\"$HOME/.claude/plugins/cache/nagisanzenin/production-grade\"; bash \"$_R/hooks/session-guard.sh\"",
+            "command": "_R=\"${CLAUDE_PLUGIN_ROOT}\"; [ -z \"$_R\" ] && _R=$(for d in \"$HOME/.claude/plugins/cache/nagisanzenin/production-grade\"/*/; do [ -f \"$d/hooks/session-guard.sh\" ] && echo \"$d\"; done | sort -V | tail -1); _R=\"${_R%/}\"; [ -z \"$_R\" ] && _R=\"$HOME/.claude/plugins/cache/nagisanzenin/production-grade\"; bash \"$_R/hooks/session-guard.sh\"",
             "timeout": 10
           }
         ]
