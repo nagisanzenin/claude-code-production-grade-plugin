@@ -1,5 +1,5 @@
 {
-  "description": "Production-grade plugin hooks for cross-session project enforcement",
+  "description": "Production-grade plugin hooks: cross-session project enforcement (SessionStart) and oracle-gate inner-loop enforcement (PostToolUse, loop-protocol Rule 7)",
   "hooks": {
     "SessionStart": [
       {
@@ -9,6 +9,18 @@
             "type": "command",
             "command": "_R=\"${CLAUDE_PLUGIN_ROOT}\"; [ -z \"$_R\" ] && _R=$(for d in \"$HOME/.claude/plugins/cache/nagisanzenin/production-grade\"/*/; do [ -f \"$d/hooks/session-guard.sh\" ] && echo \"$d\"; done | sort -V | tail -1); _R=\"${_R%/}\"; [ -z \"$_R\" ] && _R=\"$HOME/.claude/plugins/cache/nagisanzenin/production-grade\"; bash \"$_R/hooks/session-guard.sh\"",
             "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "_R=\"${CLAUDE_PLUGIN_ROOT}\"; [ -z \"$_R\" ] && _R=$(for d in \"$HOME/.claude/plugins/cache/nagisanzenin/production-grade\"/*/; do [ -f \"$d/hooks/oracle-gate.sh\" ] && echo \"$d\"; done | sort -V | tail -1); _R=\"${_R%/}\"; [ -z \"$_R\" ] && _R=\"$HOME/.claude/plugins/cache/nagisanzenin/production-grade\"; bash \"$_R/hooks/oracle-gate.sh\"",
+            "timeout": 25
           }
         ]
       }

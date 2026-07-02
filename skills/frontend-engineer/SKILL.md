@@ -15,6 +15,7 @@ description: >
 !`cat Claude-Production-Grade-Suite/.protocols/freshness-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/receipt-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/boundary-safety.md 2>/dev/null || true`
+!`cat Claude-Production-Grade-Suite/.protocols/loop-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/conflict-resolution.md 2>/dev/null || true`
 !`cat .production-grade.yaml 2>/dev/null || echo "No config — using defaults"`
 !`cat Claude-Production-Grade-Suite/.orchestrator/codebase-context.md 2>/dev/null || true`
@@ -193,6 +194,8 @@ Triggered -> Phase 1: UI/UX Analysis -> Phase 2: Functional Design Foundation (d
 **A frontend that compiles but doesn't function is a Critical defect, not a partial success.**
 
 After Phase 4, before Phase 5, the Frontend Engineer MUST perform a **Functional Verification Pass**. This is not optional. This is what separates a production-grade frontend from a file dump.
+
+**This pass is a loop, not a checklist read-through** (loop-protocol Rules 2-3): oracle = every trace below completes; ratchet = dead-element count, falling monotonically to 0; each round fixes then RE-verifies the affected traces; stop at 0, or plateau after 2 no-progress rounds → escalate per Rule 6. Log to `.orchestrator/loops/`. Source-level tracing is your Tier 1 check against the DOM chain — the HARDEN phase's Functional Drive loop later re-executes the same rule against the RUNNING app; your 0 here is its entry ticket, not its substitute.
 
 ### Dead Element Rule
 

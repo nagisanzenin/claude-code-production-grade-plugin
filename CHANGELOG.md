@@ -2,6 +2,28 @@
 
 All notable changes to the Production Grade Plugin.
 
+## [5.5.0] — 2026-07-02 — The Loop Engine
+
+Iteration becomes the main path, not the exception path. Governing idea: **a task can be agentically closed iff it has an executable oracle** — so v5.5 manufactures oracles and wires convergence loops around them. Design rationale in `docs/LOOPS.md`.
+
+### Added
+- **Loop Protocol (protocol 9 of 9)** — `skills/_shared/protocols/loop-protocol.md`, loaded by all 14 agents: no oracle no loop; oracle hierarchy (executable > adversarial > self-check); the loop contract (goal/producer/oracle/delta/ratchet/budget/exit); convergence guards (ratchet, plateau, oscillation); oracle immutability + test ownership; delta-only feedback; escalation ladder (strategy, not effort); premade loop library; JIT composer rule; loop ledger; engagement-mode loop budgets.
+- **Oracle Bootstrap (BUILD foundation step)** — before any parallel wave, the pipeline generates project-specific `\.orchestrator/oracle.sh` (fast: typecheck+lint, <15s) and `oracle-full.sh` (tests+build+boot smoke) plus an oracle-inventory receipt. Foundations before waves, same rule as `libs/shared/`.
+- **Oracle-gate hook** — new `hooks/oracle-gate.sh` + `PostToolUse` hook (`Edit|MultiEdit|Write|NotebookEdit`): during an active pipeline, the fast oracle runs after every file edit and failures feed straight back to the agent (exit 2 → stderr). Instant no-op outside pipelines (single file test). Protocols become physics.
+- **TDD pair** — QA writes failing acceptance scaffolds under `tests/` in Wave A (oracle of record); engineers implement against them and may never modify `tests/`; QA closes with a test-integrity review flagging any weakening (`.skip`, loosened assertions, deleted cases) as Critical.
+- **QA Phase 8: Execute & Test-Integrity** — the oracle must RUN: every suite executed, receipts report `tests_run/tests_passing/tests_failing` (file counts are not QA results).
+- **Functional Drive loop (HARDEN, T5c)** — an agent drives the RUNNING app (browser MCP when available; API-level fallback): every button clicked, form submitted, link followed. The Dead Element Rule is executed, not reviewed — replaces human hand-testing before Gate 3.
+- **Integration loop after every worktree merge-back** — `oracle-full.sh` against the merged tree; agents green in isolation can be red together; red merges never proceed.
+- **Loop Composer (JIT loops)** — orchestrator section allowing any agent to compose a novel loop by instantiating the standard contract: contract stated first, Tier 1-2 oracle mandatory (build a failing repro if none exists), all guards apply, ledger registration required. No new physics.
+- **Loop ledger + receipt telemetry** — loops log contract and per-iteration trajectory to `\.orchestrator/loops/`; receipts gain a `loops` array (`id`, `iterations`, `ratchet`, `exit`); non-converged exits (`plateau|oscillation|budget`) are surfaced at the next gate and feed the cost dashboard.
+- **docs/LOOPS.md** — RFC: theory, altitudes, oracle foundation, autonomy boundary (agents own everything with an oracle; humans own intent and irreversibles), mini-ADRs.
+
+### Changed
+- **Fixed-count recovery loops upgraded to convergence loops** — remediation, gate rework, self-debug now exit on convergence/plateau/oscillation with hard caps as backstops (DEV_PROTOCOL §7); remediation verification is always done by the ORIGINAL finding agent, never the fixer.
+- **Frontend Phase 4b** is explicitly a loop (ratchet = dead-element count, monotonic to 0) and the HARDEN Functional Drive re-executes the same rule against the running app.
+- **Engagement modes now scale loop budgets** (review rounds, remediation cycles, drive depth) — loops never ask the user anything.
+- **All 14 agent SKILL.md headers** load the Loop Protocol; protocol stack is 9; DEV_PROTOCOL/README counts updated.
+
 ## [5.4.1] — 2026-07-02
 
 ### Added

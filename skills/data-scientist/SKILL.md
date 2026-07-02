@@ -20,6 +20,7 @@ tags: [ml, ai, llm, data-science, optimization, analytics, ab-testing, prompt-en
 !`cat Claude-Production-Grade-Suite/.protocols/freshness-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/receipt-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/boundary-safety.md 2>/dev/null || true`
+!`cat Claude-Production-Grade-Suite/.protocols/loop-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/conflict-resolution.md 2>/dev/null || true`
 !`cat .production-grade.yaml 2>/dev/null || echo "No config — using defaults"`
 

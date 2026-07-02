@@ -37,9 +37,11 @@ Read protocols from: Claude-Production-Grade-Suite/.protocols/
 Read .production-grade.yaml for paths.tests and paths.services.
 Write tests to project root: tests/
 Write workspace artifacts to: Claude-Production-Grade-Suite/qa-engineer/
-Run integration, e2e, and performance tests.
-Distinguish test bugs (fix immediately) from implementation bugs (log as findings).
-When complete, write a receipt JSON to Claude-Production-Grade-Suite/.orchestrator/receipts/T5-qa-engineer.json with task, agent, phase, status, artifacts, metrics, effort, verification. Then mark your task as completed.""",
+You are the ORACLE OWNER (loop-protocol Rule 4): the tests/ tree is yours exclusively.
+RUN every suite you write — a written-but-never-executed test is not an oracle. Use .orchestrator/oracle-full.sh where it fits; report pass/fail counts, never "written".
+TEST-INTEGRITY REVIEW (TDD pair close-out): diff tests/ against your Wave A failing scaffolds. Any weakening by another agent (.skip, loosened assertion, deleted case) is a CRITICAL finding.
+Distinguish test bugs (fix immediately — you own tests) from implementation bugs (log as findings; NEVER weaken the test to make the implementation pass).
+When complete, write a receipt JSON to Claude-Production-Grade-Suite/.orchestrator/receipts/T5-qa-engineer.json with task, agent, phase, status, artifacts, metrics (including tests_run, tests_passing), effort, verification, loops. Then mark your task as completed.""",
   subagent_type="general-purpose",
   mode="bypassPermissions",
   run_in_background=True,
@@ -112,14 +114,33 @@ for branch in harden_worktree_branches:
 # If merge conflicts: git merge --abort, escalate to user
 ```
 
+## Functional Drive — Execute the Dead Element Rule (Loop Protocol Rule 7)
+
+After the three HARDEN agents complete (and worktree merge-back), dispatch the Functional Drive loop. This is the step that replaces human hand-testing: the Dead Element Rule gets EXECUTED against the running app, not reviewed in source.
+
+```python
+Agent(
+  prompt="""You are the Functional Drive agent (loop-protocol Rule 7).
+Boot the app via .orchestrator/oracle-full.sh boot smoke (or docker-compose up) and DRIVE it as a user:
+- Browser path (preferred): if a Playwright/browser MCP tool is available (check via ToolSearch), open every page from the navigation graph; CLICK every button, SUBMIT every form (valid + one invalid case), FOLLOW every link.
+- Fallback path (no browser tooling): exercise every API endpoint per the OpenAPI spec with real HTTP calls (auth included), and statically walk frontend handlers to flag any element with no wired action. Record in your receipt that drive was API-level only.
+Oracle: every interactive element produces its intended effect (navigation lands, form persists + feedback renders, buttons act). Any element that renders but does nothing = CRITICAL finding (Dead Element Rule).
+Loop: fix-worthy findings go to remediation; re-drive affected flows after fixes until 0 Critical or plateau (Rule 3). Scope by engagement mode (Rule 10): Express = critical flows smoke; Standard+ = full drive.
+Write findings to Claude-Production-Grade-Suite/qa-engineer/functional-drive.md, loop log to .orchestrator/loops/, receipt to .orchestrator/receipts/T5c-functional-drive.json with metrics (elements_driven, dead_elements, flows_passed) and loops.""",
+  subagent_type="general-purpose",
+  mode="bypassPermissions",
+  run_in_background=True
+)
+```
+
 ## Post-HARDEN: Receipt Verification & Remediation Preparation
 
 After all HARDEN tasks complete:
-1. **Verify receipts:** Read `.orchestrator/receipts/T5-qa-engineer.json`, `T6a-security-engineer.json`, `T6b-code-reviewer.json`. Verify all listed artifacts exist on disk.
-2. Collect all findings from T5, T6a, T6b workspace folders
+1. **Verify receipts:** Read `.orchestrator/receipts/T5-qa-engineer.json`, `T6a-security-engineer.json`, `T6b-code-reviewer.json`, `T5c-functional-drive.json`. Verify all listed artifacts exist on disk. Surface any `loops` entry with exit `plateau|oscillation|budget`.
+2. Collect all findings from T5, T5c, T6a, T6b workspace folders
 2. Deduplicate by file:line — keep highest severity rating
 3. Filter Critical/High severity findings
-4. If any Critical/High exist → T8 (Remediation in SHIP phase) receives the findings list
+4. If any Critical/High exist → T8 (Remediation in SHIP phase) receives the findings list. **Remediation is a convergence loop, not a fixed pass** (loop-protocol Rule 3): ratchet = open Critical/High count; each cycle ends with the ORIGINAL finding agents re-scanning (verification receipts); exit on 0 Critical/High, plateau (2 no-progress cycles), or oscillation — hard cap 3 cycles as backstop, then escalate with the ratchet trajectory.
 5. Medium/Low → documented but do not block pipeline
 6. Print the checkmark cascade, then findings summary:
 ```

@@ -17,11 +17,12 @@ description: >
 !`cat Claude-Production-Grade-Suite/.protocols/freshness-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/receipt-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/boundary-safety.md 2>/dev/null || true`
+!`cat Claude-Production-Grade-Suite/.protocols/loop-protocol.md 2>/dev/null || true`
 !`cat Claude-Production-Grade-Suite/.protocols/conflict-resolution.md 2>/dev/null || true`
 !`cat .production-grade.yaml 2>/dev/null || echo "No config — using defaults"`
 !`cat Claude-Production-Grade-Suite/.orchestrator/codebase-context.md 2>/dev/null || true`
 
-**Fallback (if protocols not loaded):** Use AskUserQuestion with options (never open-ended), "Chat about this" last, recommended first. Work continuously. Print progress constantly. Validate inputs before starting — classify missing as Critical (stop), Degraded (warn, continue partial), or Optional (skip silently). Use parallel tool calls for independent reads. Use Glob before Read to map file structure.
+**Fallback (if protocols not loaded):** Use AskUserQuestion with options (never open-ended), "Chat about this" last, recommended first. Work continuously. Print progress constantly. Validate inputs before starting — classify missing as Critical (stop), Degraded (warn, continue partial), or Optional (skip silently). Use parallel tool calls for independent reads. Use Glob before Read to map file structure. No oracle, no loop — never iterate without an executable exit check; never edit or weaken tests you must pass (tests/ is QA-owned).
 
 ## Engagement Mode
 
@@ -88,6 +89,10 @@ This skill runs AFTER the Software Engineer and Frontend Engineer skills have co
 - **BRD or PRD** — Acceptance criteria, user stories, business rules, edge cases
 
 The QA Engineer does NOT modify source code. It generates test files and test infrastructure to `tests/` at the project root, and test documentation (test plan, reports) to `Claude-Production-Grade-Suite/qa-engineer/`.
+
+**Oracle ownership (loop-protocol Rule 4):** the `tests/` tree is the pipeline's oracle of record, and this skill owns it EXCLUSIVELY. No other agent may edit, skip, or weaken anything under `tests/` — engineers loop red-green against it. Two duties follow:
+1. **Write failing first (TDD pair):** in Wave A, alongside the test plan, produce executable FAILING acceptance scaffolds under `tests/` for the top BRD criteria. Red scaffolds are the target engineers implement against.
+2. **Guard the oracle:** before completion, diff `tests/` against your own scaffolds and flag ANY weakening by another agent (`.skip`, loosened assertion, deleted case) as a CRITICAL finding.
 
 ### Graceful Degradation
 
@@ -212,6 +217,7 @@ Wait for all 5 agents to complete, then run Phase 7 (Test Infrastructure) sequen
 1. Phase 1: Test Planning (sequential — foundational)
 2. Phases 2-6: Unit + Integration + Contract + E2E + Performance (PARALLEL)
 3. Phase 7: Test Infrastructure (sequential — needs all test files)
+4. Phase 8: Execute & Test-Integrity (sequential — the oracle must RUN)
 
 ---
 
@@ -411,6 +417,21 @@ Write `docker-compose.test.yml` and `setup.ts` to `tests/integration/`.
 
 ---
 
+### Phase 8 — Execute & Test-Integrity
+
+**Goal:** Run the oracle and prove it. A written-but-never-executed test is not an oracle (loop-protocol Rule 1) — this phase is what makes the pipeline's verification real.
+
+**Actions:**
+1. **Run every suite you wrote.** Unit and integration always; e2e and performance where the environment allows (containers available, app boots). Use `.orchestrator/oracle-full.sh` where it exists. If a suite genuinely cannot run here (no Docker, no staging), say so explicitly in the receipt — never imply it ran.
+2. **Report execution numbers, not file counts:** `{N} tests executed, {M} passing, {K} failing` — "12 test files written" is not a QA result.
+3. **Failing tests are findings:** implementation failures go to the findings list with the failing output attached (delta for the remediation loop). Test bugs you fix yourself — you own the tests.
+4. **Test-integrity review (TDD pair close-out):** diff `tests/` against your Phase 1 scaffolds and the git history. Any weakening by a non-QA agent — `.skip`/`.only` added, assertion loosened, case deleted, threshold lowered — is a CRITICAL finding naming the offending change.
+5. **Loop until green or plateau:** re-run affected suites after your test-bug fixes; ratchet = failing count; stop on convergence or 2 no-progress rounds (Rule 3). Log to `.orchestrator/loops/`.
+
+**Output:** execution report in `Claude-Production-Grade-Suite/qa-engineer/coverage-report.md`; receipt `metrics` MUST include `tests_run`, `tests_passing`, `tests_failing`; include the `loops` array.
+
+---
+
 ## Common Mistakes
 
 | # | Mistake | Why It Fails | What to Do Instead |
@@ -451,3 +472,5 @@ Before marking the skill as complete, verify:
 - [ ] All test factories are in `tests/fixtures/factories/` and reused across test types
 - [ ] No test file has hardcoded secrets, credentials, or environment-specific values
 - [ ] All tests can run independently and in any order
+- [ ] Every suite that can run HAS run — receipt metrics show tests_run/tests_passing/tests_failing, not file counts
+- [ ] Test-integrity review completed: no non-QA weakening of `tests/` (or flagged as Critical)

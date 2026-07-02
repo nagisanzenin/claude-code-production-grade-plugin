@@ -36,7 +36,7 @@ These are the capabilities that no adjacent plugin offers in combination. Protec
 | **Self-healing gates** | Gate rejection loops back to the relevant agent for rework (max 2 cycles), re-verifies, re-presents. Pipeline never dead-ends on rejection. | No adjacent plugin has rework loops. Gate rejection = pipeline stop everywhere else. |
 | **Cost dashboard** | Effort tracking in every receipt (files_read, files_written, tool_calls). Pre-pipeline cost estimate. Final summary aggregates across all agents. | No adjacent plugin provides cost visibility. Users fly blind on token spend. |
 
-| **Harmonization protocol** | Recurring discipline to detect and fix design conflicts across 14 skills, 8 protocols, and 11 principles. Conflict matrix, authority hierarchy, engagement mode consistency checks. | No adjacent plugin has a self-consistency mechanism. Multi-agent systems accumulate contradictions silently. |
+| **Harmonization protocol** | Recurring discipline to detect and fix design conflicts across 14 skills, 9 protocols, and 11 principles. Conflict matrix, authority hierarchy, engagement mode consistency checks. | No adjacent plugin has a self-consistency mechanism. Multi-agent systems accumulate contradictions silently. |
 
 **Rule: Any new feature must either strengthen an existing differentiator or introduce a new one. Features that merely match what others already do are low priority.**
 
@@ -65,7 +65,7 @@ skills/{skill-name}/
 
 ### Protocol Stack Is Law
 
-All 14 agents load these 8 shared protocols at startup:
+All 14 agents load these 9 shared protocols at startup:
 
 ```
 1. UX Protocol          — structured interactions, no open-ended questions
@@ -76,11 +76,12 @@ All 14 agents load these 8 shared protocols at startup:
 6. Freshness Protocol   — verify volatile data before implementing
 7. Receipt Protocol     — JSON proof of completion, verified at gates
 8. Boundary Safety      — 6 patterns for system boundary bugs
+9. Loop Protocol        — oracle-driven iteration: no oracle no loop, convergence guards, oracle immutability
 ```
 
 **Rules:**
-- Every new skill MUST load all 8 protocols via `!`cat` commands in its SKILL.md header.
-- New protocols are added only when a pattern is (a) universal across all agents, and (b) derived from real failure, not theory. We currently have 8. Getting to 12 would be concerning. Each protocol adds cognitive load to every agent.
+- Every new skill MUST load all 9 protocols via `!`cat` commands in its SKILL.md header.
+- New protocols are added only when a pattern is (a) universal across all agents, and (b) derived from real failure, not theory. We currently have 9 (the Loop Protocol was motivated by documented failures: tests written but never run, oracle-gaming by weakening checks, fixed-count rework that neither converges nor escalates well). Getting to 12 would be concerning. Each protocol adds cognitive load to every agent.
 - Protocol files live in `skills/_shared/protocols/`. They are never skill-specific.
 
 ### Parallelism Architecture
@@ -194,7 +195,7 @@ Version lives in 4 places. All must match:
 ### Adding a New Skill
 
 1. Create `skills/{skill-name}/SKILL.md` with YAML frontmatter (`name`, `description`)
-2. Add all 8 protocol `!`cat` loading lines in the header
+2. Add all 9 protocol `!`cat` loading lines in the header
 3. Add Engagement Mode section reading from `settings.md`
 4. Add Progress Output section following visual identity
 5. Add Input Classification table (Critical/Degraded/Optional)
@@ -328,12 +329,15 @@ The plugin aims to be autonomous in a sense that the system self-heals and self-
 
 The pipeline should recover from failures without human intervention whenever possible. But recovery is not free — every retry burns tokens, every rework cycle adds context.
 
-| Mechanism | Bound | Why the Bound Exists |
+As of v5.5, all recovery loops are governed by the Loop Protocol (`skills/_shared/protocols/loop-protocol.md`): every loop names an executable oracle, tracks a ratchet, and exits on **convergence, plateau (2 no-progress rounds), or oscillation** — the counts below are hard-cap BACKSTOPS, not targets. Escalation changes strategy, not effort (fresh approach → altitude up → user).
+
+| Mechanism | Backstop | Why the Bound Exists |
 |---|---|---|
 | Gate rework loops | Max 2 cycles per gate | Beyond 2, the issue is likely fundamental, not incremental. Escalate to user. |
 | Agent self-debug | Max 3 attempts | After 3 failures, the agent lacks the information to self-resolve. Report with diagnostics. |
 | Worktree merge conflicts | 1 auto-resolve attempt | Merge conflicts require human judgment. Don't burn tokens guessing. |
-| Remediation re-scan | Max 2 fix-rescan cycles | If a fix doesn't hold after 2 cycles, the root cause is misidentified. |
+| Remediation re-scan | Max 3 fix-rescan cycles | Convergence-based (ratchet = open Critical/High); if the count stops falling for 2 cycles, the root cause is misidentified — escalate with the trajectory. |
+| Inner red-green / review / integration / functional-drive loops | Per loop-protocol Rules 3 & 10 | Convergence-first with plateau/oscillation guards; budgets scale with engagement mode. |
 
 **Token discipline for self-healing:**
 - Rework reuses existing context. Re-read the same artifacts — don't re-discover from scratch.
@@ -366,7 +370,7 @@ Every feature that adds information to the pipeline has a context cost. Be aware
 
 ```
 Feature costs context:
-  +8 protocols × 14 agents         = protocol loading overhead (fixed, acceptable)
+  +9 protocols × 14 agents         = protocol loading overhead (fixed, acceptable)
   +1 rework cycle                  = ~10-30K tokens (bounded by max 2 cycles)
   +1 compound learning entry       = ~500 tokens (acceptable)
   +1 new protocol                  = ~2K tokens × 14 agents = 28K per run (expensive — gate carefully)
@@ -379,7 +383,7 @@ Feature costs context:
 
 ## 8. Harmonization Protocol
 
-A system with 14 skills, 8 protocols, 5 phase dispatchers, and 11 governing principles will accumulate design conflicts through normal iteration. New features get bolted on. Principles evolve. Agent prompts drift from their SKILL.md definitions. What was coherent at v5.0 develops contradictions by v5.4.
+A system with 14 skills, 9 protocols, 5 phase dispatchers, and 11 governing principles will accumulate design conflicts through normal iteration. New features get bolted on. Principles evolve. Agent prompts drift from their SKILL.md definitions. What was coherent at v5.0 develops contradictions by v5.4.
 
 **Harmonization is not a one-time fix — it is a recurring discipline.**
 
@@ -501,7 +505,7 @@ When implementing a change, run through these questions in order:
 
 Before every commit, verify:
 
-- [ ] All modified skill files still load all 8 protocols
+- [ ] All modified skill files still load all 9 protocols
 - [ ] Phase numbering is consecutive and consistent (`[1/N]` through `[N/N]`)
 - [ ] Version is bumped in all 4 locations (if version-worthy change)
 - [ ] CHANGELOG.md is updated
