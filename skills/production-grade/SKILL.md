@@ -335,7 +335,7 @@ AskUserQuestion(questions=[{
    ```
    - Read new SHA: `git -C /tmp/pg-update rev-parse HEAD`
    - Create cache dir: `mkdir -p ~/.claude/plugins/cache/nagisanzenin/production-grade/{remote_version}`
-   - Copy files: `cp -r /tmp/pg-update/skills /tmp/pg-update/.claude-plugin /tmp/pg-update/README.md /tmp/pg-update/VISION.md ~/.claude/plugins/cache/nagisanzenin/production-grade/{remote_version}/`
+   - Copy the full plugin (excluding VCS metadata): `rm -rf /tmp/pg-update/.git && cp -r /tmp/pg-update/. ~/.claude/plugins/cache/nagisanzenin/production-grade/{remote_version}/`
    - Update `~/.claude/plugins/installed_plugins.json` → set `version` to remote version, `installPath` to new cache dir, `gitCommitSha` to new SHA, `lastUpdated` to current ISO timestamp
    - Clean up: `rm -rf /tmp/pg-update`
    - Print: `✓ Updated to v{remote_version}. Re-invoke /production-grade to use the new version.`

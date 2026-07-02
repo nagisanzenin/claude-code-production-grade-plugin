@@ -2,6 +2,16 @@
 
 All notable changes to the Production Grade Plugin.
 
+## [5.4.1] — 2026-07-02
+
+### Added
+- **`docs/PUBLISHING.md`** — two-repo publish + release runbook (this plugin repo + the `nagisanzenin/claude-code-plugins` marketplace): version-resolution/update-gating rules, step-by-step release procedure, local validation/testing, consume flow, and known version drift. (#4)
+
+### Fixed
+- **Non-existent tool references** — replaced `smart_outline`/`smart_search`/`smart_unfold` (not in Claude Code's tool catalog) with `Glob`/`Grep`/`Read` across the tool-efficiency protocol and 8 skills, so instructed tool calls no longer fail. (#1)
+- **SessionStart hook fallback** — now resolves the versioned install directory (`~/.claude/plugins/cache/nagisanzenin/production-grade/<version>/`) where `session-guard.sh` actually lives, via a pure-shell version-sorted glob. The previous unversioned fallback pointed at a path with no script, silently skipping the guard when `CLAUDE_PLUGIN_ROOT` was unset. (#3)
+- **Auto-Update Check dropped `hooks/`** — the updater copied only `skills`, `.claude-plugin`, `README.md`, and `VISION.md` into the new version directory, so the SessionStart hook disappeared after an in-plugin update. It now copies the full plugin (excluding VCS metadata).
+
 ## [5.4.0] — 2026-03-07
 
 ### Added
