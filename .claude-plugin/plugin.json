@@ -1,7 +1,7 @@
 {
   "name": "production-grade",
   "description": "Enhances Claude Code from producing raw code into delivering production-ready systems. 14 specialized agents handle architecture, tested code, security audit, CI/CD, and documentation. Use for building apps/websites/services, adding features, hardening, deployment, testing, review, or architecture design.",
-  "version": "5.4.0",
+  "version": "5.4.1",
   "author": {
     "name": "nagisanzenin"
   },
