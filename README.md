@@ -21,6 +21,8 @@
 /plugin install production-grade@nagisanzenin
 ```
 
+> **New in v5.5 — The Loop Engine.** Agents stop claiming "done" and start proving it. Every stage now loops against a check it can't argue with — typecheck, tests, or the running app clicking its own buttons — until it converges. [How it works.](#the-loop-engine)
+
 <br>
 
 ## Built With This Plugin
@@ -38,6 +40,8 @@
 ## Release Timeline
 
 ```
+2026-07-02  v5.5  ●━━━ The Loop Engine — oracle-driven iteration: edit-gate hook, TDD pair, functional drive replaces hand-testing
+                  │
 2026-03-07  v5.4  ●━━━ Harmonization — mode-aware autonomy, cross-session enforcement, agent skill loading
                   │
 2026-03-07  v5.3  ●━━━ Worktree isolation, self-healing gates, cost dashboard
@@ -136,6 +140,45 @@
 ```
 
 > **3 gates. 2 waves. 10+ parallel execution points. ~3x faster than sequential.**
+> **Every stage loops against an executable oracle until it converges — [The Loop Engine](#the-loop-engine).**
+
+---
+
+## The Loop Engine
+
+*New in v5.5 — the reason the agents stop lying about "done."*
+
+Software is never one pass. It's write, run, fail, fix, run again, until a check passes. Through v5.4 the pipeline was mostly feed-forward: each agent did its job, handed the artifact down, and correctness leaned on human review at the gates. v5.5 makes iteration the main path, on a single rule:
+
+> **A task is done when a check it cannot argue with says so — not when the agent claims it.**
+
+That check is an *oracle*: a compiler, a type checker, a test suite, or the running app clicking its own buttons. No oracle, no loop.
+
+```
+        ┌──────────────┐
+        │   PRODUCE    │   agent writes / fixes
+        └──────┬───────┘
+               ▼
+        ┌──────────────┐   red    ┌────────────────┐
+        │    ORACLE    │ ───────▶ │  DELTA BACK    │
+        │ test·type·app│          │ failing output │
+        └──────┬───────┘          │ only → re-loop │
+          green │                 └────────┬───────┘
+               ▼                           │
+        ┌──────────────┐  no progress ×2   │
+        │  CONVERGED   │ ◀─────────────────┘
+        └──────────────┘  plateau → escalate strategy, not effort
+```
+
+What it adds, concretely:
+
+- **Oracle bootstrap.** Before any parallel wave, the pipeline writes two check scripts for your project: a fast one (typecheck + lint, under 15s) and a full one (tests + build + boot smoke).
+- **Enforced by a hook, not a prompt.** A `PostToolUse` hook runs the fast oracle after *every* file edit. Break something and the error lands back in the agent's lap immediately, not at the end.
+- **Separated duties.** QA writes failing tests first and owns the `tests/` folder. A coding agent that weakens a test to go green gets flagged with a Critical finding. No grading their own homework.
+- **Functional drive.** Before the final gate, an agent boots the real app and drives it — every button, every form, every link. A control that renders but does nothing is a Critical bug. This is the hand-testing replacement.
+- **Convergence, not retries.** Each loop tracks a number (failing tests, open findings) and stops when it hits zero or stops improving, shows the trend, then escalates. No retrying the same fix five times.
+
+Fully backward compatible: a pipeline that never needs to loop runs exactly as before. Full design rationale in [docs/LOOPS.md](docs/LOOPS.md).
 
 ---
 
@@ -224,6 +267,15 @@ Not just full builds. The orchestrator reads your request and routes automatical
 ```
   ┌──────────────────────────────────────────────────────────────┐
   │                                                              │
+  │  ORACLE-DRIVEN LOOPS          FUNCTIONAL DRIVE               │
+  │  ──────────────────           ────────────────               │
+  │  No oracle, no loop. A loop   A separate agent boots the     │
+  │  exits on an executable       running app and drives it:     │
+  │  check: tests, typecheck,     every button, every form,      │
+  │  the running app. Never on    every link. A dead element     │
+  │  "looks done." Converge or    is a Critical bug — this is    │
+  │  escalate, never blind-retry. the hand-testing killer.       │
+  │                                                              │
   │  RECEIPT ENFORCEMENT          RE-ANCHORING                   │
   │  ─────────────────            ────────────                   │
   │  Every agent writes a         Orchestrator re-reads specs    │
@@ -236,7 +288,7 @@ Not just full builds. The orchestrator reads your request and routes automatical
   │  ──────────────────           ──────────────────             │
   │  Code reviewer assumes        Agents detect volatile data    │
   │  code is WRONG until          (model IDs, pricing, CVEs)     │
-  │  proven right. Scales         and WebSearch to verify         │
+  │  proven right. Scales         and WebSearch to verify        │
   │  from critical-only to        BEFORE implementing.           │
   │  hostile break scenarios.                                    │
   │                                                              │
@@ -255,7 +307,7 @@ Not just full builds. The orchestrator reads your request and routes automatical
   │  Meticulous: every decision   New sessions get a courteous   │
   │  surfaced. Agent questions    prompt: use plugin, work       │
   │  scale independently of       directly, or chat about it.    │
-  │  pipeline gates.              Your workflow persists.         │
+  │  pipeline gates.              Your workflow persists.        │
   │                                                              │
   └──────────────────────────────────────────────────────────────┘
 ```
@@ -325,21 +377,23 @@ Large skills split into **router + on-demand phases**. Only what's needed loads.
 ## By the Numbers
 
 ```
-  ┌────────────────────────────────────────────────────┐
+  ┌─────────────────────────────────────────────────────┐
   │                                                     │
   │   14  specialized agents                            │
-  │    8  shared protocols                              │
+  │    9  shared protocols                              │
+  │    2  oracle scripts generated per project          │
+  │    1  fast oracle check after every single edit     │
   │   10  execution modes                               │
   │   10+ parallel execution points                     │
   │    3  approval gates                                │
   │    4  engagement modes                              │
   │   ~3x faster than sequential execution              │
   │  ~45% fewer input tokens from parallelism           │
-  │    0  open-ended questions — all structured          │
+  │    0  open-ended questions — all structured         │
   │   11  governing principles                          │
   │    5  languages: TS, Go, Python, Rust, Java/Kotlin  │
   │                                                     │
-  └────────────────────────────────────────────────────┘
+  └─────────────────────────────────────────────────────┘
 ```
 
 ---
