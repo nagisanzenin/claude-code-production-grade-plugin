@@ -2,6 +2,17 @@
 
 All notable changes to the Production Grade Plugin.
 
+## [5.5.2] — 2026-07-02 — Loop-engine robustness
+
+Hardening from a full-ceremony autonomous dogfood (a real nano SaaS built end-to-end DEFINE->SUSTAIN with 10 agents + 3 gates). Additive.
+
+### Fixed
+- **Resilient report-artifact writes.** In sandboxed/subagent environments the Write tool can be blocked on report `.md` files (findings, docs), leaving receipts that reference an artifact never written. Agents now fall back to Bash to persist report/doc files, and the orchestrator RECOVERS a missing artifact (persist from the agent's returned content, or re-dispatch) before opening any gate — it never gates on a missing artifact. Caught in the dogfood by the pipeline's own receipt-verification. (receipt-protocol.md)
+- **Deep smoke must include an adversarial/edge input.** A boot smoke that reuses the unit tests' happy-path values inherits their blind spots (the v5.5.1 dogfood's "verbatim redirect" bug hid behind safe-char-only smoke AND tests). Oracle Bootstrap now requires at least one unusual/unsafe input in the deep smoke. (build.md)
+
+### Changed
+- README Release Timeline updated — v5.5.1 and v5.5.2 were missing (the 5.5.1 release bumped the badge/CHANGELOG but not the timeline).
+
 ## [5.5.1] — 2026-07-02 — Loop Engine hardening
 
 Hardening from an empirical shakedown of 5.5.0 (a real SaaS was built through the pipeline and the hook was instrumented). All changes are additive and backward compatible.

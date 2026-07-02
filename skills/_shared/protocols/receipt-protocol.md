@@ -111,7 +111,7 @@ At every phase transition and before every gate, the orchestrator:
 2. **Reads each receipt** from `.orchestrator/receipts/`
 3. **Verifies artifacts exist** — for each path in `receipt.artifacts`, confirm the file exists on disk
 4. **If receipt missing** — the task did not complete properly. Investigate before proceeding.
-5. **If artifacts missing** — the agent claimed to produce files it didn't. Investigate before proceeding.
+5. **If artifacts missing** — the agent claimed a file it didn't persist (e.g. its Write tool was blocked on a report `.md`). RECOVER it: persist the artifact from the agent's returned content, or re-dispatch the task, then re-verify. NEVER open a gate with a missing artifact.
 6. **Extracts metrics** for gate ceremony display — users see verified data, not agent claims
 
 ---
@@ -129,3 +129,4 @@ At every phase transition and before every gate, the orchestrator:
 | `"effort": {}` or missing effort field | Count files_read, files_written, tool_calls from your actual work |
 | Iterated work with no `loops` entry | Every loop is registered: contract in `.orchestrator/loops/`, summary in the receipt. Unregistered loops are invisible cost. |
 | Reporting a `plateau`/`budget` exit as success | Non-convergence is information. State it in the receipt; the orchestrator surfaces it at the gate. |
+| Receipt lists a report/doc file the Write tool couldn't create (blocked/sandboxed) | Persist it via Bash heredoc (`cat > file <<'EOF'`), verify it exists, THEN write the receipt. An artifact you couldn't write is not done. |
