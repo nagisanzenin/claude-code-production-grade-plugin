@@ -467,6 +467,11 @@ Join the Discord to share what you've built, discuss workflows, report bugs, and
 
 ## License
 
+## More from the same workshop
+
+- **[engram](https://github.com/nagisanzenin/engram)** — an evidence-based learning engine: first-principles curricula, generation-first tutoring, blind-graded free recall, FSRS scheduling. The receipt-and-assessor discipline in this plugin started there.
+- **[effortmining](https://github.com/nagisanzenin/effortmining)** — benchmark-calibrated reasoning-effort dispatch for Claude Code subagents (64.7% fewer output tokens at equal quality, pre-registered). Built *with* this pipeline — its repo carries the receipts.
+
 MIT
 
 ---
