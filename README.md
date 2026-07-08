@@ -465,12 +465,16 @@ Join the Discord to share what you've built, discuss workflows, report bugs, and
 
 ---
 
-## License
-
 ## More from the same workshop
 
-- **[engram](https://github.com/nagisanzenin/engram)** — an evidence-based learning engine: first-principles curricula, generation-first tutoring, blind-graded free recall, FSRS scheduling. The receipt-and-assessor discipline in this plugin started there.
-- **[effortmining](https://github.com/nagisanzenin/effortmining)** — benchmark-calibrated reasoning-effort dispatch for Claude Code subagents (64.7% fewer output tokens at equal quality, pre-registered). Built *with* this pipeline — its repo carries the receipts.
+Five Claude Code plugins from the same workshop. Most share one habit: *let a deterministic core decide, and never let the producer of work grade it.*
+
+- **[engram](https://github.com/nagisanzenin/engram)** — evidence-based learning engine: first-principles curricula, generation-first tutoring, blind-graded free recall, FSRS-scheduled memory. The receipt-and-assessor discipline in this plugin started there.
+- **[effortmining](https://github.com/nagisanzenin/effortmining)** — benchmark-calibrated per-subagent reasoning effort: dispatch the cheapest tier a blind grader still accepts (64.7% fewer output tokens at equal quality, pre-registered). Built *with* this pipeline — its repo carries the receipts.
+- **[idiolect](https://github.com/nagisanzenin/idiolect)** — human-voice writing engine: 60+ measured voices plus a deterministic AI-tell scanner and a blind auditor, so text reads like a person, not a model.
+- **[less](https://github.com/nagisanzenin/less)** — a minimal comms protocol for Claude: a per-turn hook makes replies answer-first, pick-list-driven, and calm, without touching the work.
+
+## License
 
 MIT
 
